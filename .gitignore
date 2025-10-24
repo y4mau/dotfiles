@@ -1,0 +1,65 @@
+# Sensitive files - DO NOT COMMIT
+*.key
+*.pem
+*.p12
+*.pfx
+*.cer
+*.crt
+*secret*
+*password*
+*credential*
+*token*
+*.env
+.envrc
+
+# AWS credentials
+.aws/
+.boto
+
+# SSH keys
+.ssh/
+
+# Cloud provider configs with credentials
+.azure/
+.gcp/
+
+# Shell history (may contain sensitive commands)
+.*_history
+.zsh_history
+.bash_history
+.psql_history
+.irb_history
+.python_history
+
+# API keys and tokens
+.claude.json*
+.openai/
+.anthropic/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Cache and temp files
+*.cache
+*.log
+*.tmp
+.cache/
+.temp/
+
+# Local environment
+.local/
+.npm/
+.nvm/
+.rbenv/
+.pyenv/
+node_modules/
+
+# IDE specific (may contain project-specific settings)
+.vscode/settings.json
+.idea/workspace.xml
+
+# Database
+*.sqlite
+*.db
