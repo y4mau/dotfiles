@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(git worktree:*)",
+      "Bash(ls:*)",
+      "Bash(terminal-notifier:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:modelcontextprotocol.io)"
+    ],
+    "ask": [
+      "Bash(git push:*)"
+    ],
+    "deny": []
+  }
+}

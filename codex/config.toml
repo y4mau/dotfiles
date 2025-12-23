@@ -1,0 +1,29 @@
+# OpenAI Codex CLI Configuration
+# See: https://github.com/openai/codex
+
+# Default model to use
+model = "gpt-5.1-codex-max"
+model_reasoning_effort = "medium"
+
+# Project trust levels - add your projects here
+# [projects."/path/to/your/project"]
+# trust_level = "trusted"
+
+# MCP Servers
+[mcp_servers.chrome-devtools]
+command = "npx"
+args = ["chrome-devtools-mcp@latest"]
+
+[mcp_servers.figma]
+command = "npx"
+args = ["-y", "mcp-remote", "http://127.0.0.1:3845/sse"]
+
+[mcp_servers.github]
+command = "mcp-server-github"
+
+[mcp_servers.github.env]
+GITHUB_TOKEN = "${env:GITHUB_TOKEN}"
+
+# Feature flags
+[features]
+rmcp_client = true
