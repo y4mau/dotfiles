@@ -1,162 +1,326 @@
-# Kiro CLI pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/bashrc.pre.bash" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/bashrc.pre.bash"
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+# ~/.bashrc: executed by bash(1) for non-login shells.
 
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# =============================================================================
+# Platform Detection
+# =============================================================================
+IS_MACOS=false
+IS_WSL=false
+IS_LINUX=false
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    IS_MACOS=true
+elif grep -qi microsoft /proc/version 2>/dev/null; then
+    IS_WSL=true
+    IS_LINUX=true
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    IS_LINUX=true
+fi
+
+# =============================================================================
+# History Configuration
+# =============================================================================
+HISTCONTROL=ignoreboth:erasedups
+shopt -s histappend
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# =============================================================================
+# Shell Options
+# =============================================================================
+shopt -s checkwinsize  # Check window size after each command
+set -o vi  # Enable vi mode
+
+# =============================================================================
 # PATH Configuration
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+# =============================================================================
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"
+export PATH="/usr/local/go/bin:$PATH"
+export PATH="$HOME/.npm-global/bin:$PATH"
 
-# NOTE: Source company-specific profile if exists
-# source ~/.tok2/profile
+# Homebrew (macOS)
+if $IS_MACOS; then
+    if [[ -f /opt/homebrew/bin/brew ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -f /usr/local/bin/brew ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+fi
 
-# Set ghq & peco shortcut as '^]'
-function peco-src () {
-  local selected_dir=$(ghq list -p | peco --query "$READLINE_LINE")
-  if [ -n "$selected_dir" ]; then
-    READLINE_LINE="cd ${selected_dir}"
-    READLINE_POINT=${#READLINE_LINE}
-    history -s "$READLINE_LINE"
-  fi
-  clear
+# npm global bin (if exists)
+if command -v npm &> /dev/null; then
+    export PATH="$(npm config get prefix)/bin:$PATH"
+fi
+
+# Lazy load rbenv (faster shell startup)
+export PATH="$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
+rbenv() {
+    unset -f rbenv
+    eval "$(command rbenv init -)"
+    rbenv "$@"
 }
-bind -x '"\C-]": peco-src'
 
-# NOTE: Company-specific AWS functions removed for security
-# 複数インスタンスログイン
-# function toku-ec2-start-multi-session() {
-#      xpanes -c 'envchain aws-bargain aws ssm start-session --target {}' $(envchain aws-bargain aws ec2 describe-instances --output text --query "Reservations[].Instances[?State.Name=='running'].[InstanceId,Tags[?Key=='Name'].Value|[0],PrivateIpAddress]" | peco | awk '{print $1}' | tr '\n' ' ')
-# }
+# nvm (if installed)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# aliases
-# git commands
-alias pex='pet exec'
-alias ped='pet edit'
+# pnpm (platform-aware)
+if $IS_MACOS; then
+    export PNPM_HOME="$HOME/Library/pnpm"
+else
+    export PNPM_HOME="$HOME/.local/share/pnpm"
+fi
+case ":$PATH:" in
+    *":$PNPM_HOME:"*) ;;
+    *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+# =============================================================================
+# Environment Variables
+# =============================================================================
+export EDITOR=vim
+export LESS='-R'
+
+# Browser (WSL2 uses wslview to open in Windows)
+if $IS_WSL; then
+    export BROWSER=wslview
+fi
+
+# =============================================================================
+# Prompt Configuration
+# =============================================================================
+# make less more friendly for non-text input files (Linux only)
+if $IS_LINUX && [ -x /usr/bin/lesspipe ]; then
+    eval "$(SHELL=/bin/sh lesspipe)"
+fi
+
+# set variable identifying the chroot you work in (Debian/Ubuntu)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# Colored prompt
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt
+
+# Set terminal title
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+esac
+
+# =============================================================================
+# Color Support
+# =============================================================================
+if $IS_LINUX && [ -x /usr/bin/dircolors ]; then
+    # Linux: use dircolors
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+elif $IS_MACOS; then
+    # macOS: use -G flag for color
+    export CLICOLOR=1
+    export LSCOLORS=GxFxCxDxBxegedabagaced
+    alias ls='ls -G'
+fi
+
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# =============================================================================
+# Aliases
+# =============================================================================
+# ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Shell
 alias exsh='exec $SHELL'
+alias es='exec $SHELL'
+
+# Git aliases
 alias gb='git branch'
-alias gsp='git-switch-peco'
 alias gs='git switch'
+alias gsp='git-switch-peco'
 alias gp='git push'
 alias gpl='git pull'
 alias ga='git add'
 alias gc='git commit'
 alias gm='git merge'
-
-# git branch history
-# ref: https://zenn.dev/koakuma_ageha/articles/d185ecd5000dcf
-# path=/usr/local/bin/git_branch_history.sh
+alias grom='git fetch && git rebase origin/master'
 alias gsh='git_branch_history.sh'
 
-alias pbcopy="nkf -w | __CF_USER_TEXT_ENCODING=0x$(printf %x $(id -u)):0x08000100:14 pbcopy"
+# Git worktree jump with peco
+alias gwj='source ~/bin/git-worktree-jump.sh'
+
+# Tools
 alias bers="bundle exec rspec"
+alias pex='pet exec'
+alias ped='pet edit'
 
-# mkdir + touch
-# https://qiita.com/ta1m1kam/items/d22249c348dd71cb6652
-alias mduch='sh /usr/local/bin/mduch.sh'
+# Claude Code aliases
+alias cb="claude --permission-mode bypassPermissions"
+alias ccb="claude -c --permission-mode bypassPermissions"
 
-# color output
-export LESS='-R'
+# Gemini CLI
+alias gemini='npx https://github.com/google-gemini/gemini-cli'
+
+# Open file with editor using peco
+if command -v peco &> /dev/null; then
+    if $IS_MACOS && command -v cursor &> /dev/null; then
+        alias cind='cursor "$(find . -type f | peco)"'
+    elif command -v code &> /dev/null; then
+        alias cind='code "$(find . -type f | peco)"'
+    else
+        alias vind='vim "$(find . -type f | peco)"'
+    fi
+fi
+
+# Clipboard (platform-aware)
+if $IS_MACOS; then
+    # macOS has pbcopy/pbpaste built-in
+    :
+elif $IS_WSL; then
+    alias pbcopy='clip.exe'
+    alias pbpaste='powershell.exe -command "Get-Clipboard" | tr -d "\r"'
+elif command -v xclip &> /dev/null; then
+    alias pbcopy='xclip -selection clipboard'
+    alias pbpaste='xclip -selection clipboard -o'
+fi
+
+# =============================================================================
+# Functions
+# =============================================================================
+
+# ghq + peco repository selector (Ctrl+])
+function peco-src () {
+    local selected_dir=$(ghq list -p | peco --query "$READLINE_LINE")
+    if [ -n "$selected_dir" ]; then
+        READLINE_LINE=""
+        history -s "cd ${selected_dir}"
+        cd "$selected_dir"
+        stty sane
+        clear
+        exec $SHELL
+    fi
+    READLINE_LINE=""
+    clear
+}
+if command -v peco &> /dev/null && command -v ghq &> /dev/null; then
+    bind -x '"\C-]": peco-src'
+fi
 
 # git switch with peco
 function git-switch-peco() {
-  local branch
-  branch=$(git branch --all | grep -v '\->' | peco | sed 's/.* //')
-  if [ -n "$branch" ]; then
-    git switch "$branch"
-  fi
+    local branch
+    branch=$(git branch --all | grep -v '\->' | peco | sed 's/.* //')
+    if [ -n "$branch" ]; then
+        git switch "$branch"
+    fi
 }
-
-# direnv config
-export EDITOR=vim
-eval "$(direnv hook bash)"
-
-# pnpm
-export PNPM_HOME="/Users/keigo.yamauchi/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/keigo.yamauchi/Downloads/google-cloud-sdk/path.bash.inc' ]; then . '/Users/keigo.yamauchi/Downloads/google-cloud-sdk/path.bash.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/keigo.yamauchi/Downloads/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/keigo.yamauchi/Downloads/google-cloud-sdk/completion.bash.inc'; fi
-
-# NOTE: Local environment files that may contain sensitive data
-# . "$HOME/.local/bin/env"
-
-# NOTE: Removed credentials path - set GOOGLE_APPLICATION_CREDENTIALS in your local environment
-# cline settings
-# export GOOGLE_APPLICATION_CREDENTIALS='/path/to/your/credentials.json'
-[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path bash)"
-
-export PATH=$(npm config get prefix)/bin:$PATH
-
-# Function to set iTerm2 tab title
-function set_iterm_tab_title() {
-  local directory=${PWD##*/}
-  local git_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-
-  if [[ -n "$git_branch" ]]; then
-    echo -ne "\033]0;${directory} (${git_branch})\007"
-  else
-    echo -ne "\033]0;${directory}\007"
-  fi
-}
-
-# Set the title before each prompt (bash equivalent of precmd)
-PROMPT_COMMAND="set_iterm_tab_title"
-
-# iTerm2 shell integration (bash version)
-test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
-
-# NOTE: Set your own Google Cloud project ID
-# gemini cli settings
-# export GOOGLE_CLOUD_PROJECT="your-project-id"
-alias gemini='npx https://github.com/google-gemini/gemini-cli'
 
 # Real-time clock in YYYY-MM-DD format
 function clock() {
-  # Restore cursor when the function is interrupted (Ctrl+C)
-  trap 'tput cnorm; printf "\n"; trap - INT' INT
-
-  ( # Run the loop in a subshell
-    while true; do
-      tput civis # Hide cursor on each iteration
-      printf "\r$(LC_TIME=en_US.UTF-8 date '+%Y-%m-%d %H:%M:%S %a %Z')"
-      sleep 1
-    done
-  )
+    trap 'tput cnorm; printf "\n"; trap - INT' INT
+    (
+        while true; do
+            tput civis
+            printf "\r$(LC_TIME=en_US.UTF-8 date '+%Y-%m-%d %H:%M:%S %a %Z')"
+            sleep 1
+        done
+    )
 }
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# =============================================================================
+# Tool Integrations (Lazy Loading)
+# =============================================================================
 
-# Basic bash configurations
-set -o vi  # Enable vi mode
-shopt -s histappend  # Append to history file
-shopt -s checkwinsize  # Check window size after each command
-export HISTCONTROL=ignoredups:erasedups  # Avoid duplicate history entries
-export HISTSIZE=1000
-export HISTFILESIZE=2000
+# Lazy load direnv (faster shell startup)
+direnv() {
+    unset -f direnv
+    eval "$(command direnv hook bash)"
+    direnv "$@"
+}
 
-# Enable programmable completion features
+# Lazy load Google Cloud SDK
+gcloud() {
+    local sdk_path=""
+    if $IS_MACOS; then
+        # Common macOS locations
+        for path in "$HOME/Downloads/google-cloud-sdk" "$HOME/google-cloud-sdk" "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"; do
+            if [ -d "$path" ]; then
+                sdk_path="$path"
+                break
+            fi
+        done
+    else
+        sdk_path="$HOME/google-cloud-sdk"
+    fi
+
+    if [ -n "$sdk_path" ]; then
+        [ -f "$sdk_path/path.bash.inc" ] && source "$sdk_path/path.bash.inc"
+        [ -f "$sdk_path/completion.bash.inc" ] && source "$sdk_path/completion.bash.inc"
+    fi
+    unset -f gcloud
+    gcloud "$@"
+}
+
+# Bash completion
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
+    if [ -f /usr/share/bash-completion/bash_completion ]; then
+        . /usr/share/bash-completion/bash_completion
+    elif [ -f /etc/bash_completion ]; then
+        . /etc/bash_completion
+    elif $IS_MACOS && [ -f "$(brew --prefix 2>/dev/null)/etc/bash_completion" ]; then
+        . "$(brew --prefix)/etc/bash_completion"
+    fi
 fi
 
-# Simple colored PS1 prompt
-export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+# VSCode shell integration
+[[ "$TERM_PROGRAM" == "vscode" ]] && [ -x "$(command -v code)" ] && . "$(code --locate-shell-integration-path bash)"
 
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path bash)"
-export PATH=~/.npm-global/bin:$PATH
+# iTerm2 shell integration (macOS)
+if $IS_MACOS; then
+    test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+fi
 
-# Kiro CLI post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/bashrc.post.bash"
+# =============================================================================
+# Terminal Title (optimized with caching)
+# =============================================================================
+_last_pwd=""
+_cached_git_branch=""
+
+function update_terminal_title() {
+    if [[ "$PWD" != "$_last_pwd" ]]; then
+        _last_pwd="$PWD"
+        local directory=${PWD##*/}
+        _cached_git_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        if [[ -n "$_cached_git_branch" ]]; then
+            echo -ne "\033]0;${directory} (${_cached_git_branch})\007"
+        else
+            echo -ne "\033]0;${directory}\007"
+        fi
+    fi
+}
+PROMPT_COMMAND="update_terminal_title"
+
+# Load local customizations (not tracked in git)
+[ -f ~/.bashrc.local ] && . ~/.bashrc.local
+export PATH="$PATH:$(go env GOPATH)/bin"
