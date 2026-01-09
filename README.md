@@ -2,6 +2,14 @@
 
 Personal development environment configuration files.
 
+## Supported Platforms
+
+- **macOS** (Intel & Apple Silicon)
+- **WSL2** (Windows Subsystem for Linux)
+- **Linux** (Debian/Ubuntu)
+
+Shell configurations auto-detect the platform and adjust behavior accordingly.
+
 ## Structure
 
 ```
@@ -85,17 +93,29 @@ After installation, customize these files:
 
 ## Prerequisites
 
-These dotfiles assume you have the following installed:
-- Oh My Zsh (for zsh configuration)
+### Required
+
+- **peco** - interactive filtering tool (for `Ctrl+]`, `gsp`, `cind`)
+- **ghq** - repository management (for `Ctrl+]`)
+
+### Optional (lazy-loaded if installed)
+
+- **rbenv** - Ruby version manager
+- **nvm** - Node version manager
+- **direnv** - environment variable manager
+- **gcloud** - Google Cloud SDK
+- **pnpm** - Package manager
+
+### For Zsh
+
+- Oh My Zsh
 - Powerlevel10k theme
-- rbenv (Ruby version manager)
-- direnv (environment variable manager)
-- peco (interactive filtering tool)
-- ghq (repository management)
-- nvm (Node version manager)
-- pnpm (Package manager)
-- terminal-notifier (for task completion notifications)
+
+### Other Tools
+
+- terminal-notifier (macOS, for task completion notifications)
 - jq (for JSON processing in scripts)
+- wslu (WSL2, for `wslview` browser support)
 
 ### For Claude Code
 
@@ -133,6 +153,68 @@ These dotfiles assume you have the following installed:
 |------|-------------|
 | `ai-principles-reminder.sh` | Enforce AI operation principles |
 | `thinking-mode-reminder.sh` | Auto-declare thinking mode based on context |
+
+## Shell Configuration
+
+### Cross-Platform Features
+
+The `.bashrc` uses platform detection (`IS_MACOS`, `IS_WSL`, `IS_LINUX`) to handle:
+
+| Feature | macOS | WSL2/Linux |
+|---------|-------|------------|
+| Homebrew | `/opt/homebrew` or `/usr/local` | skipped |
+| pnpm path | `~/Library/pnpm` | `~/.local/share/pnpm` |
+| ls colors | `-G` + `CLICOLOR` | `dircolors` + `--color=auto` |
+| Clipboard | `pbcopy` (native) | `clip.exe` / `powershell` |
+| Browser | default | `wslview` |
+| gcloud SDK | `~/Downloads/`, `~/`, Caskroom | `~/google-cloud-sdk` |
+| Bash completion | `brew --prefix` | `/usr/share/bash-completion` |
+| iTerm2 | shell integration | skipped |
+| `cind` alias | `cursor` | `code` |
+
+### Shell Aliases
+
+| Alias | Command | Description |
+|-------|---------|-------------|
+| `es` / `exsh` | `exec $SHELL` | Reload shell |
+| `gb` | `git branch` | List branches |
+| `gs` | `git switch` | Switch branch |
+| `gsp` | `git-switch-peco` | Switch branch with peco |
+| `gp` | `git push` | Push to remote |
+| `gpl` | `git pull` | Pull from remote |
+| `ga` | `git add` | Stage files |
+| `gc` | `git commit` | Commit changes |
+| `gm` | `git merge` | Merge branch |
+| `grom` | `git fetch && git rebase origin/master` | Rebase on master |
+| `gwj` | git-worktree-jump | Jump to worktree with peco |
+| `cb` | `claude --permission-mode bypassPermissions` | Claude Code bypass |
+| `ccb` | `claude -c --permission-mode bypassPermissions` | Claude continue + bypass |
+| `cind` | Open file with peco | Interactive file opener |
+| `pbcopy` / `pbpaste` | Clipboard | Cross-platform clipboard |
+
+### Key Bindings
+
+| Key | Function |
+|-----|----------|
+| `Ctrl+]` | `peco-src` - ghq repository selector |
+
+### Lazy Loading
+
+For faster shell startup, these tools are lazy-loaded (initialized on first use):
+- `rbenv`
+- `direnv`
+- `gcloud`
+
+### Local Customizations
+
+Add machine-specific settings to `~/.bashrc.local` (not tracked in git):
+
+```bash
+# Example ~/.bashrc.local
+export GOOGLE_CLOUD_PROJECT="my-project-id"
+export GOOGLE_APPLICATION_CREDENTIALS="$HOME/.config/gcloud/credentials.json"
+source ~/.company-profile
+```
 
 ## Notes
 
