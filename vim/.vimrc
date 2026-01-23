@@ -1,6 +1,8 @@
 " ----------------------------------------
 " editor settings
 " ----------------------------------------
+" enable filetype detection and indentation
+filetype plugin indent on
 " replace tab input with spaces
 set expandtab
 " width of tab
@@ -44,6 +46,7 @@ set virtualedit=onemore
 call plug#begin('~/.vim/plugged')
 
 " Declare the list of plugins.
+Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-sensible'
 Plug 'junegunn/seoul256.vim'
 Plug 'othree/yajs.vim', { 'for': ['javascript', 'javascript.jsx'] }
