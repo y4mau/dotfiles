@@ -182,6 +182,14 @@ alias ccb="claude -c --permission-mode bypassPermissions"
 # Gemini CLI
 alias gemini='npx https://github.com/google-gemini/gemini-cli'
 
+# GCloud aliases (gca instead of ga to avoid conflict with git add)
+alias gca='gcloud auth list --format="value(account)" | peco | xargs -I {} gcloud config set account {}'
+alias gpr='gcloud projects list --format="value(project_id)" | peco | xargs -I {} gcloud config set project {}'
+
+# Kubectl aliases
+alias ka='kubectl config get-contexts -o name | peco | xargs -I {} kubectl config use-context {}'
+alias k='kubectl'
+
 # Open file with editor using peco
 if command -v peco &> /dev/null; then
     if $IS_MACOS && command -v cursor &> /dev/null; then
@@ -234,6 +242,21 @@ function git-switch-peco() {
     if [ -n "$branch" ]; then
         git switch "$branch"
     fi
+}
+
+# Get credentials for all GKE clusters
+function get-gke-cluster-credentials {
+    clusters=$(gcloud container clusters list --format="value(name, location)")
+    echo "$clusters" | while read -r line; do
+        if [[ -n "$line" ]]; then
+            cluster_name=$(echo $line | awk '{print $1}')
+            cluster_location=$(echo $line | awk '{print $2}')
+
+            command="gcloud container clusters get-credentials $cluster_name --region $cluster_location"
+            echo "Running command: $command"
+            eval $command
+        fi
+    done
 }
 
 # Real-time clock in YYYY-MM-DD format
@@ -324,3 +347,10 @@ PROMPT_COMMAND="update_terminal_title"
 # Load local customizations (not tracked in git)
 [ -f ~/.bashrc.local ] && . ~/.bashrc.local
 export PATH="$PATH:$(go env GOPATH)/bin"
+. "$HOME/.cargo/env"
+export PATH="$PATH:$HOME/go/bin"
+alias g='git'
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
