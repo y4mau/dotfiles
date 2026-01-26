@@ -157,6 +157,17 @@ alias ga='git add'
 alias gc='git commit'
 alias gm='git merge'
 alias grom='git fetch && git rebase origin/master'
+alias gst='git status'
+
+# Git alias completions
+compdef gb=git-branch
+compdef gs=git-switch
+compdef gp=git-push
+compdef gst=git-status
+compdef gpl=git-pull
+compdef ga=git-add
+compdef gc=git-commit
+compdef gm=git-merge
 
 # git branch history
 # ref: https://zenn.dev/koakuma_ageha/articles/d185ecd5000dcf

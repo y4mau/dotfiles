@@ -320,6 +320,19 @@ if ! shopt -oq posix; then
     fi
 fi
 
+# Git alias completions
+if [ -f /usr/share/bash-completion/completions/git ]; then
+    source /usr/share/bash-completion/completions/git
+    __git_complete gb _git_branch
+    __git_complete gs _git_switch
+    __git_complete gst _git_status
+    __git_complete gp _git_push
+    __git_complete gpl _git_pull
+    __git_complete ga _git_add
+    __git_complete gc _git_commit
+    __git_complete gm _git_merge
+fi
+
 # VSCode shell integration
 [[ "$TERM_PROGRAM" == "vscode" ]] && [ -x "$(command -v code)" ] && . "$(code --locate-shell-integration-path bash)"
 
