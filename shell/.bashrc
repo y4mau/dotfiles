@@ -191,6 +191,9 @@ alias gpr='gcloud projects list --format="value(project_id)" | peco | xargs -I {
 alias ka='kubectl config get-contexts -o name | peco | xargs -I {} kubectl config use-context {}'
 alias k='kubectl'
 
+# Devcontainer aliases
+alias dewf='devcontainer exec --workspace-folder .'
+
 # Open file with editor using peco
 if command -v peco &> /dev/null; then
     if $IS_MACOS && command -v cursor &> /dev/null; then
