@@ -35,6 +35,15 @@ Include:
 - `git diff --stat BASE...HEAD`
 - `git diff --name-only BASE...HEAD`
 
+### Step 2.5) Gather supplemental context
+Before calling Codex, check the current conversation for any relevant context that would help the reviewer. Build a `CONTEXT` block (may be empty) containing:
+
+- **Background**: important context about the branch purpose or architecture decisions
+- **Prior concerns**: issues previously raised by Codex or human reviewers in this session
+- **Resolutions**: which concerns were addressed, which were deferred, and why
+
+Format as a plain-text block. If there is no relevant prior context, leave `CONTEXT` empty.
+
 ### Step 3) Codex review (read-only)
 Run Codex CLI and ask it to review the patch. Do NOT apply changes automatically.
 
@@ -43,6 +52,7 @@ Run:
 
 Where <PROMPT> does:
 - Run: `git diff --patch BASE...HEAD`
+- If CONTEXT is non-empty, include it verbatim under a "## Supplemental context" heading before the review instructions
 - Strict review for correctness, security, performance, readability, compatibility, missing tests
 - Output Markdown with sections:
   - Summary
