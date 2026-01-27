@@ -106,22 +106,53 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
+# Git status for prompt
+function __git_ps1_branch() {
+    local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    [[ -z "$branch" ]] && return
+
+    local status=""
+
+    # Modified files
+    git diff --quiet 2>/dev/null || status+="*"
+
+    # Staged files
+    git diff --cached --quiet 2>/dev/null || status+="+"
+
+    # Untracked files
+    [[ -n $(git ls-files --others --exclude-standard 2>/dev/null | head -1) ]] && status+="?"
+
+    # Ahead/behind upstream
+    local counts=$(git rev-list --left-right --count @{upstream}...HEAD 2>/dev/null)
+    if [[ -n "$counts" ]]; then
+        local behind=${counts%%	*}
+        local ahead=${counts##*	}
+        [[ $ahead -gt 0 ]] && status+="↑$ahead"
+        [[ $behind -gt 0 ]] && status+="↓$behind"
+    fi
+
+    # Stash
+    [[ -n $(git stash list 2>/dev/null | head -1) ]] && status+="$"
+
+    echo " ($branch$status)"
+}
+
 # Colored prompt
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u\[\033[00m\]: \[\033[01;34m\]\w\[\033[01;33m\]$(__git_ps1_branch)\[\033[00m\] \$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u: \w$(__git_ps1_branch) \$ '
 fi
 unset color_prompt
 
 # Set terminal title
 case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u: \w\a\]$PS1"
     ;;
 esac
 
@@ -363,11 +394,3 @@ PROMPT_COMMAND="update_terminal_title"
 
 # Load local customizations (not tracked in git)
 [ -f ~/.bashrc.local ] && . ~/.bashrc.local
-export PATH="$PATH:$(go env GOPATH)/bin"
-. "$HOME/.cargo/env"
-export PATH="$PATH:$HOME/go/bin"
-alias g='git'
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
