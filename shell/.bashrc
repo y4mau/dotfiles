@@ -143,7 +143,8 @@ case "$TERM" in
 esac
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u\[\033[00m\]: \[\033[01;34m\]\w\[\033[01;33m\]$(__git_ps1_branch)\[\033[00m\] \$ '
+    # One Half Dark: green=#98c379, blue=#61afef, yellow=#e5c07b
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[38;2;152;195;121m\]\u\[\033[00m\]: \[\033[38;2;97;175;239m\]\w\[\033[38;2;229;192;123m\]$(__git_ps1_branch)\[\033[00m\] \$ '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u: \w$(__git_ps1_branch) \$ '
 fi
