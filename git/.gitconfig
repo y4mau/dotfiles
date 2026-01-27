@@ -1,17 +1,15 @@
 [user]
 	# NOTE: Replace with your own name and email
 	name = Your Name
-  email = your.email@example.com
-[url "git@github.com:"]
-  insteadOf = https://github.com/
+	email = your.email@example.com
+[include]
+	path = ~/.gitconfig.local
 [pager]
 	log = less
 	branch = cat
 	config = less
 [core]
 	editor = code --wait
-[credential]
-	helper = osxkeychain
 [init]
 	defaultBranch = main
 [diff]

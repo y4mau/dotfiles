@@ -10,6 +10,9 @@ ln -sf "$DOTFILES_DIR/shell/.zprofile" ~/.zprofile
 
 # Git config
 ln -sf "$DOTFILES_DIR/git/.gitconfig" ~/.gitconfig
+if [ ! -f /.dockerenv ]; then
+  ln -sf "$DOTFILES_DIR/git/.gitconfig.local" ~/.gitconfig.local
+fi
 
 # Vim config
 ln -sf "$DOTFILES_DIR/vim/.vimrc" ~/.vimrc
