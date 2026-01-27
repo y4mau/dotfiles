@@ -50,35 +50,21 @@ Before using these dotfiles:
 
 ## Installation
 
-### Manual Installation
-
 ```bash
-# Clone the repository
-git clone https://github.com/kei9o/dotfiles.git ~/dotfiles
+git clone https://github.com/y4mau/dotfiles.git ~/dotfiles
+bash ~/dotfiles/install.sh
+```
 
-# Create symlinks for shell configs
-ln -sf ~/dotfiles/shell/.zshrc ~/.zshrc
-ln -sf ~/dotfiles/shell/.bashrc ~/.bashrc
-ln -sf ~/dotfiles/shell/.zprofile ~/.zprofile
+### VS Code Devcontainers
 
-# Create symlinks for git config
-ln -sf ~/dotfiles/git/.gitconfig ~/.gitconfig
+Dotfiles are automatically installed when creating a devcontainer if you add the following to your VS Code settings:
 
-# Create symlinks for vim config
-ln -sf ~/dotfiles/vim/.vimrc ~/.vimrc
-
-# Create symlinks for Claude Code config
-mkdir -p ~/.claude
-ln -sf ~/dotfiles/claude/CLAUDE.md ~/.claude/CLAUDE.md
-ln -sf ~/dotfiles/claude/settings.json ~/.claude/settings.json
-ln -sf ~/dotfiles/claude/statusline-command.sh ~/.claude/statusline-command.sh
-ln -sf ~/dotfiles/claude/agents ~/.claude/agents
-ln -sf ~/dotfiles/claude/commands ~/.claude/commands
-ln -sf ~/dotfiles/claude/hooks ~/.claude/hooks
-
-# Create symlinks for Codex CLI config
-mkdir -p ~/.codex
-ln -sf ~/dotfiles/codex/config.toml ~/.codex/config.toml
+```json
+{
+  "dotfiles.repository": "y4mau/dotfiles",
+  "dotfiles.targetPath": "~/dotfiles",
+  "dotfiles.installCommand": "install.sh"
+}
 ```
 
 ### Customization
