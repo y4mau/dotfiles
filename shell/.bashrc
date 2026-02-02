@@ -305,12 +305,10 @@ function get-gke-cluster-credentials {
 
 # Get credentials for all EKS clusters across all enabled regions
 function get-eks-cluster-credentials {
-    local profile="${1:-$AWS_PROFILE}"
-    local profile_opt="${profile:+--profile $profile}"
-    local regions="${2:-$(aws ec2 describe-regions --query 'Regions[*].RegionName' --output text $profile_opt 2>/dev/null)}"
+    local regions=$(aws ec2 describe-regions --query 'Regions[*].RegionName' --output text 2>/dev/null)
 
     for region in $regions; do
-        clusters=$(aws eks list-clusters --region "$region" --output text --query 'clusters[*]' $profile_opt 2>/dev/null)
+        clusters=$(aws eks list-clusters --region "$region" --output text --query 'clusters[*]' 2>/dev/null)
 
         if [[ -z "$clusters" ]]; then
             continue
@@ -319,7 +317,7 @@ function get-eks-cluster-credentials {
         echo "Found EKS clusters in region: $region"
         for cluster in $clusters; do
             if [[ -n "$cluster" ]]; then
-                command="aws eks update-kubeconfig --name $cluster --region $region $profile_opt"
+                command="aws eks update-kubeconfig --name $cluster --region $region"
                 echo "  Running: $command"
                 eval $command
             fi
