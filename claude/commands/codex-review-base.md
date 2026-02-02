@@ -13,8 +13,8 @@ allowed-tools:
 ## Context
 - Repo check: !`git rev-parse --is-inside-work-tree`
 - Current branch: !`git branch --show-current`
-- Local+remote branches (for base selection): !`git branch -a`
-- Common base refs: !`git show-ref --heads --tags | head -n 50`
+- Branch tracking info: !`git branch -vv`
+- Remote branches: !`git branch -r`
 
 ## Task
 You will ask Codex CLI to review the code changes between a **base branch** and **HEAD**.
@@ -51,6 +51,7 @@ Run:
 `codex exec "<PROMPT>"`
 
 Where <PROMPT> does:
+- State the resolved BASE ref (e.g. "Base branch: origin/main") so the reviewer knows the comparison point
 - Run: `git diff --patch BASE...HEAD`
 - If CONTEXT is non-empty, include it verbatim under a "## Supplemental context" heading before the review instructions
 - Strict review for correctness, security, performance, readability, compatibility, missing tests
