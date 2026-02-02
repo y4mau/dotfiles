@@ -224,6 +224,9 @@ alias gemini='npx https://github.com/google-gemini/gemini-cli'
 alias gca='gcloud auth list --format="value(account)" | peco | xargs -I {} gcloud config set account {}'
 alias gpr='gcloud projects list --format="value(project_id)" | peco | xargs -I {} gcloud config set project {}'
 
+# AWS aliases
+alias apr='export AWS_PROFILE=$(aws configure list-profiles | peco --prompt "AWS Profile > ")'
+
 # Kubectl aliases
 alias ka='kubectl config get-contexts -o name | peco | xargs -I {} kubectl config use-context {}'
 alias k='kubectl'
@@ -297,6 +300,30 @@ function get-gke-cluster-credentials {
             echo "Running command: $command"
             eval $command
         fi
+    done
+}
+
+# Get credentials for all EKS clusters across multiple regions
+function get-eks-cluster-credentials {
+    local profile="${1:-$AWS_PROFILE}"
+    local regions="${2:-ap-northeast-1 us-east-1 us-west-2}"
+
+    for region in $regions; do
+        echo "Fetching EKS clusters in region: $region"
+        clusters=$(aws eks list-clusters --region "$region" --output text --query 'clusters[*]' ${profile:+--profile "$profile"} 2>/dev/null)
+
+        if [[ -z "$clusters" ]]; then
+            echo "  No clusters found in $region"
+            continue
+        fi
+
+        for cluster in $clusters; do
+            if [[ -n "$cluster" ]]; then
+                command="aws eks update-kubeconfig --name $cluster --region $region ${profile:+--profile $profile}"
+                echo "Running: $command"
+                eval $command
+            fi
+        done
     done
 }
 
@@ -400,3 +427,7 @@ PROMPT_COMMAND="update_terminal_title"
 
 # Load local customizations (not tracked in git)
 [ -f ~/.bashrc.local ] && . ~/.bashrc.local
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
