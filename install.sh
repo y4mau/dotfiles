@@ -255,4 +255,12 @@ if [ -d "$DOTFILES_DIR/claude" ]; then
   [ -d "$DOTFILES_DIR/claude/hooks" ] && ln -sfn "$DOTFILES_DIR/claude/hooks" ~/.claude/hooks
 fi
 
+# Custom bin scripts
+if [ -d "$DOTFILES_DIR/bin" ]; then
+  mkdir -p ~/bin
+  for script in "$DOTFILES_DIR/bin"/*; do
+    [ -f "$script" ] && ln -sf "$script" ~/bin/
+  done
+fi
+
 echo "Dotfiles installed successfully!"
