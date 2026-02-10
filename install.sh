@@ -244,6 +244,9 @@ fi
 # Vim config
 ln -sf "$DOTFILES_DIR/vim/.vimrc" ~/.vimrc
 
+# Tmux config
+ln -sf "$DOTFILES_DIR/tmux/.tmux.conf" ~/.tmux.conf
+
 # Claude Code config (optional - create dir if needed)
 if [ -d "$DOTFILES_DIR/claude" ]; then
   mkdir -p ~/.claude
