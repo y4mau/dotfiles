@@ -219,16 +219,26 @@ compdef _git gm=git-merge
 # Functions
 # =============================================================================
 
-# ghq + peco repository selector (Ctrl+])
+# ghq + fzf/peco repository selector (Ctrl+])
 function peco-src () {
-  local selected_dir=$(ghq list -p | peco --query "$LBUFFER")
+  local selected_dir
+  if command -v fzf &> /dev/null; then
+    if [[ -n "$TMUX" ]]; then
+      selected_dir=$(ghq list -p | fzf --tmux 80%,60% --query "$LBUFFER")
+    else
+      selected_dir=$(ghq list -p | fzf --query "$LBUFFER")
+    fi
+  else
+    selected_dir=$(ghq list -p | peco --query "$LBUFFER")
+  fi
   if [ -n "$selected_dir" ]; then
     BUFFER="cd ${selected_dir}"
     zle accept-line
+  else
+    zle reset-prompt
   fi
-  zle clear-screen
 }
-if command -v peco &> /dev/null && command -v ghq &> /dev/null; then
+if (command -v fzf &> /dev/null || command -v peco &> /dev/null) && command -v ghq &> /dev/null; then
   zle -N peco-src
   bindkey '^]' peco-src
 fi
