@@ -6,115 +6,72 @@
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time Oh My Zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="agnoster"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
 plugins=(
-	git
+  git
 )
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
+# =============================================================================
+# Platform Detection
+# =============================================================================
+IS_MACOS=false
+IS_WSL=false
+IS_LINUX=false
 
-# export MANPATH="/usr/local/man:$MANPATH"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  IS_MACOS=true
+elif grep -qi microsoft /proc/version 2>/dev/null; then
+  IS_WSL=true
+  IS_LINUX=true
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  IS_LINUX=true
+fi
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+# =============================================================================
+# History Configuration
+# =============================================================================
+HISTSIZE=1000
+SAVEHIST=2000
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+setopt APPEND_HISTORY
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
+# =============================================================================
+# Shell Options
+# =============================================================================
+bindkey -v  # Enable vi mode
 
-# Compilation flags
-# export ARCHFLAGS="-arch $(uname -m)"
+# =============================================================================
+# PATH Configuration
+# =============================================================================
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"
+export PATH="/usr/local/go/bin:$PATH"
+export PATH="$HOME/.npm-global/bin:$PATH"
 
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+# Homebrew (macOS)
+if $IS_MACOS; then
+  if [[ -f /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -f /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+fi
 
-# Lazy load rbenv
+# npm global bin (if exists)
+if command -v npm &> /dev/null; then
+  export PATH="$(npm config get prefix)/bin:$PATH"
+fi
+
+# Lazy load rbenv (faster shell startup)
 export PATH="$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
 rbenv() {
   unset -f rbenv
@@ -122,10 +79,147 @@ rbenv() {
   rbenv "$@"
 }
 
-# NOTE: Source company-specific profile if exists
-# source ~/.tok2/profile
+# nvm (if installed)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# set ghq & peco shortcut as '^]'
+# pnpm (platform-aware)
+if $IS_MACOS; then
+  export PNPM_HOME="$HOME/Library/pnpm"
+else
+  export PNPM_HOME="$HOME/.local/share/pnpm"
+fi
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# =============================================================================
+# Environment Variables
+# =============================================================================
+export EDITOR=vim
+export LESS='-R'
+
+# Browser (WSL2 uses wslview to open in Windows)
+if $IS_WSL; then
+  export BROWSER=wslview
+fi
+
+# =============================================================================
+# Color Support
+# =============================================================================
+if $IS_LINUX && [ -x /usr/bin/dircolors ]; then
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  alias ls='ls --color=auto'
+elif $IS_MACOS; then
+  export CLICOLOR=1
+  export LSCOLORS=GxFxCxDxBxegedabagaced
+  alias ls='ls -G'
+fi
+
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# =============================================================================
+# Aliases
+# =============================================================================
+# ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Shell
+alias exsh='exec $SHELL'
+alias es='exec $SHELL'
+
+# Git aliases
+alias gb='git branch'
+alias gs='git switch'
+alias gsp='git-switch-peco'
+alias gp='git push'
+alias gpl='git pull'
+alias gst='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gm='git merge'
+alias grom='git fetch && git rebase origin/master'
+alias gsh='git_branch_history.sh'
+
+# Git worktree jump with peco
+alias gwj='source ~/bin/git-worktree-jump.sh'
+
+# Tools
+alias bers="bundle exec rspec"
+alias pex='pet exec'
+alias ped='pet edit'
+
+# Claude Code aliases
+alias cb="claude --permission-mode bypassPermissions"
+alias ccb="claude -c --permission-mode bypassPermissions"
+
+# Gemini CLI
+alias gemini='npx https://github.com/google-gemini/gemini-cli'
+
+# GCloud aliases (gca instead of ga to avoid conflict with git add)
+alias gca='gcloud auth list --format="value(account)" | peco | xargs -I {} gcloud config set account {}'
+alias gpr='gcloud projects list --format="value(project_id)" | peco | xargs -I {} gcloud config set project {}'
+
+# AWS aliases
+alias apr='export AWS_PROFILE=$(aws configure list-profiles | peco --prompt "AWS Profile > ")'
+
+# Kubectl aliases
+alias ka='kubectl config get-contexts -o name | peco | xargs -I {} kubectl config use-context {}'
+alias k='kubectl'
+
+# Devcontainer aliases
+alias dewf='devcontainer exec --workspace-folder .'
+
+# Open file with editor using peco
+if command -v peco &> /dev/null; then
+  if $IS_MACOS && command -v cursor &> /dev/null; then
+    alias cind='cursor "$(find . -type f | peco)"'
+  elif command -v code &> /dev/null; then
+    alias cind='code "$(find . -type f | peco)"'
+  else
+    alias vind='vim "$(find . -type f | peco)"'
+  fi
+fi
+
+# Clipboard (platform-aware)
+if $IS_MACOS; then
+  # macOS has pbcopy/pbpaste built-in
+  :
+elif $IS_WSL; then
+  alias pbcopy='clip.exe'
+  alias pbpaste='powershell.exe -command "Get-Clipboard" | tr -d "\r"'
+elif command -v xclip &> /dev/null; then
+  alias pbcopy='xclip -selection clipboard'
+  alias pbpaste='xclip -selection clipboard -o'
+fi
+
+# =============================================================================
+# Git Alias Completions (zsh)
+# =============================================================================
+compdef _git gb=git-branch
+compdef _git gs=git-switch
+compdef _git gp=git-push
+compdef _git gst=git-status
+compdef _git gpl=git-pull
+compdef _git ga=git-add
+compdef _git gc=git-commit
+compdef _git gm=git-merge
+
+# =============================================================================
+# Functions
+# =============================================================================
+
+# ghq + peco repository selector (Ctrl+])
 function peco-src () {
   local selected_dir=$(ghq list -p | peco --query "$LBUFFER")
   if [ -n "$selected_dir" ]; then
@@ -134,64 +228,10 @@ function peco-src () {
   fi
   zle clear-screen
 }
-zle -N peco-src
-bindkey '^]' peco-src
-
-# NOTE: Company-specific AWS functions removed for security
-# 複数インスタンスログイン
-# function toku-ec2-start-multi-session() {
-#      xpanes -c 'envchain aws-bargain aws ssm start-session --target {}' $(envchain aws-bargain aws ec2 describe-instances --output text --query "Reservations[].Instances[?State.Name=='running'].[InstanceId,Tags[?Key=='Name'].Value|[0],PrivateIpAddress]" | peco | awk '{print $1}' | tr '\n' ' ')
-# }
-
-# aliases
-# git commands
-alias pex='pet exec'
-alias ped='pet edit'
-alias exsh='exec $SHELL'
-alias gb='git branch'
-alias gsp='git-switch-peco'
-alias gs='git switch'
-alias gp='git push'
-alias gpl='git pull'
-alias ga='git add'
-alias gc='git commit'
-alias gm='git merge'
-alias grom='git fetch && git rebase origin/master'
-alias gst='git status'
-
-# Git alias completions
-compdef gb=git-branch
-compdef gs=git-switch
-compdef gp=git-push
-compdef gst=git-status
-compdef gpl=git-pull
-compdef ga=git-add
-compdef gc=git-commit
-compdef gm=git-merge
-
-# git branch history
-# ref: https://zenn.dev/koakuma_ageha/articles/d185ecd5000dcf
-# path=/usr/local/bin/git_branch_history.sh
-alias gsh='git_branch_history.sh'
-
-alias pbcopy="nkf -w | __CF_USER_TEXT_ENCODING=0x$(printf %x $(id -u)):0x08000100:14 pbcopy"
-alias bers="bundle exec rspec"
-
-# mkdir + touch
-# https://qiita.com/ta1m1kam/items/d22249c348dd71cb6652
-alias mduch='sh /usr/local/bin/mduch.sh'
-
-# Claude Code with bypass permissions
-alias cb="claude --permission-mode bypassPermissions"
-
-# Claude Code with continue (-c) and bypass permissions
-alias ccb="claude -c --permission-mode bypassPermissions"
-
-# cursor open file with peco
-alias cind='cursor "$(find . -type f | peco)"'
-
-# color output
-export LESS='-R'
+if command -v peco &> /dev/null && command -v ghq &> /dev/null; then
+  zle -N peco-src
+  bindkey '^]' peco-src
+fi
 
 # git switch with peco
 function git-switch-peco() {
@@ -202,105 +242,121 @@ function git-switch-peco() {
   fi
 }
 
-# direnv config
-export EDITOR=vim
-# Lazy load direnv
-direnv() {
-  unset -f direnv
-  eval "$(command direnv hook zsh)"
-  direnv "$@"
+# Get credentials for all GKE clusters
+function get-gke-cluster-credentials {
+  clusters=$(gcloud container clusters list --format="value(name, location)")
+  echo "$clusters" | while read -r line; do
+    if [[ -n "$line" ]]; then
+      cluster_name=$(echo $line | awk '{print $1}')
+      cluster_location=$(echo $line | awk '{print $2}')
+
+      command="gcloud container clusters get-credentials $cluster_name --region $cluster_location"
+      echo "Running command: $command"
+      eval $command
+    fi
+  done
 }
 
+# Get credentials for all EKS clusters across all enabled regions
+function get-eks-cluster-credentials {
+  local regions=$(aws ec2 describe-regions --query 'Regions[*].RegionName' --output text 2>/dev/null)
 
-# pnpm
-export PNPM_HOME="/Users/keigo.yamauchi/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
+  for region in ${=regions}; do
+    clusters=$(aws eks list-clusters --region "$region" --output text --query 'clusters[*]' 2>/dev/null)
 
-# Lazy load Google Cloud SDK
-gcloud() {
-  if [ -f '/Users/keigo.yamauchi/Downloads/google-cloud-sdk/path.zsh.inc' ]; then
-    source '/Users/keigo.yamauchi/Downloads/google-cloud-sdk/path.zsh.inc'
-  fi
-  if [ -f '/Users/keigo.yamauchi/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then
-    source '/Users/keigo.yamauchi/Downloads/google-cloud-sdk/completion.zsh.inc'
-  fi
-  unset -f gcloud
-  gcloud "$@"
+    if [[ -z "$clusters" ]]; then
+      continue
+    fi
+
+    echo "Found EKS clusters in region: $region"
+    for cluster in ${=clusters}; do
+      if [[ -n "$cluster" ]]; then
+        command="aws eks update-kubeconfig --name $cluster --region $region"
+        echo "  Running: $command"
+        eval $command
+      fi
+    done
+  done
 }
-
-# NOTE: Local environment files that may contain sensitive data
-# . "$HOME/.local/bin/env"
-
-# NOTE: Removed credentials path - set GOOGLE_APPLICATION_CREDENTIALS in your local environment
-# cline settings
-# export GOOGLE_APPLICATION_CREDENTIALS='/path/to/your/credentials.json'
-[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
-
-export PATH=$(npm config get prefix)/bin:$PATH
-
-# Function to set iTerm2 tab title
-function set_iterm_tab_title() {
-  local directory=${PWD##*/}
-  local git_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-
-  if [[ -n "$git_branch" ]]; then
-    echo -ne "\033]0;${directory} (${git_branch})\007"
-  else
-    echo -ne "\033]0;${directory}\007"
-  fi
-}
-
-# Optimized precmd with caching
-_last_pwd=""
-_cached_git_branch=""
-precmd() {
-  # Only update title if directory changed
-  if [[ "$PWD" != "$_last_pwd" ]]; then
-    _last_pwd="$PWD"
-    _cached_git_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-    set_iterm_tab_title
-  fi
-}
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-# NOTE: Set your own Google Cloud project ID
-# gemini cli settings
-# export GOOGLE_CLOUD_PROJECT="your-project-id"
-alias gemini='npx https://github.com/google-gemini/gemini-cli'
 
 # Real-time clock in YYYY-MM-DD format
 function clock() {
-  # Restore cursor when the function is interrupted (Ctrl+C)
   trap 'tput cnorm; printf "\n"; trap - INT' INT
-
-  ( # Run the loop in a subshell
+  (
     while true; do
-      tput civis # Hide cursor on each iteration
+      tput civis
       printf "\r$(LC_TIME=en_US.UTF-8 date '+%Y-%m-%d %H:%M:%S %a %Z')"
       sleep 1
     done
   )
 }
 
+# =============================================================================
+# Tool Integrations (Lazy Loading)
+# =============================================================================
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# Lazy load direnv (faster shell startup)
+direnv() {
+  unset -f direnv
+  eval "$(command direnv hook zsh)"
+  direnv "$@"
+}
 
-# claude code monitor
-# alias ccusage='npx ccusage@latest blocks --live'
+# Lazy load Google Cloud SDK
+gcloud() {
+  local sdk_path=""
+  if $IS_MACOS; then
+    for path in "$HOME/Downloads/google-cloud-sdk" "$HOME/google-cloud-sdk" "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"; do
+      if [ -d "$path" ]; then
+        sdk_path="$path"
+        break
+      fi
+    done
+  else
+    sdk_path="$HOME/google-cloud-sdk"
+  fi
 
-# git worktree jump with peco
-alias gwj='source ~/bin/git-worktree-jump.sh'
+  if [ -n "$sdk_path" ]; then
+    [ -f "$sdk_path/path.zsh.inc" ] && source "$sdk_path/path.zsh.inc"
+    [ -f "$sdk_path/completion.zsh.inc" ] && source "$sdk_path/completion.zsh.inc"
+  fi
+  unset -f gcloud
+  gcloud "$@"
+}
 
+# VSCode shell integration
+[[ "$TERM_PROGRAM" == "vscode" ]] && [ -x "$(command -v code)" ] && . "$(code --locate-shell-integration-path zsh)"
 
+# iTerm2 shell integration (macOS)
+if $IS_MACOS; then
+  test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+fi
+
+# Kiro shell integration
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
-export PATH=~/.npm-global/bin:$PATH
+
+# =============================================================================
+# Terminal Title (optimized with caching)
+# =============================================================================
+_last_pwd=""
+_cached_git_branch=""
+
+function update_terminal_title() {
+  if [[ "$PWD" != "$_last_pwd" ]]; then
+    _last_pwd="$PWD"
+    local directory=${PWD##*/}
+    _cached_git_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [[ -n "$_cached_git_branch" ]]; then
+      echo -ne "\033]0;${directory} (${_cached_git_branch})\007"
+    else
+      echo -ne "\033]0;${directory}\007"
+    fi
+  fi
+}
+precmd_functions+=(update_terminal_title)
+
+# Load local customizations (not tracked in git)
+[ -f ~/.zshrc.local ] && . ~/.zshrc.local
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
