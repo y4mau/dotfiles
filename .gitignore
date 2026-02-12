@@ -90,7 +90,7 @@ node_modules/
 
 # IDE specific (may contain project-specific settings)
 .vscode/settings.json
-.idea/workspace.xml
+.idea/*
 
 # Database
 *.sqlite
