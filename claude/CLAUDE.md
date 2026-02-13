@@ -232,7 +232,7 @@ Fixes #234
 - Use Mermaid diagrams as needed when creating documents to visualize flows, architectures, relationships, and other structures
 - Choose the appropriate Mermaid diagram type (flowchart, sequence, class, ER, state, etc.) based on the content
 - Use `<br/>` instead of `\n` for line breaks in Mermaid node labels
-- Use plain text (not Mermaid) for directory structures
+- Use code blocks (not Mermaid) for directory structures
 - Use dark-mode-friendly colors in Mermaid diagrams (avoid pure black backgrounds, prefer soft/muted tones such as `#2d333b`, `#58a6ff`, `#3fb950`, `#d29922`, `#f85149`)
 
 ### GitHub Resource Workflow
