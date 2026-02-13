@@ -31,7 +31,9 @@ dotfiles/
 │   └── hooks/          # Pre/post execution hooks
 ├── codex/              # OpenAI Codex CLI configuration
 │   └── config.toml     # Codex settings and MCP servers
-└── config/             # Application-specific configs
+├── config/             # Application-specific configs
+├── install.sh          # Setup script for Linux/macOS/WSL
+└── install-windows.ps1 # Setup script for Windows (Claude Code symlinks)
 ```
 
 ## Security
@@ -50,10 +52,23 @@ Before using these dotfiles:
 
 ## Installation
 
+### Linux / macOS / WSL
+
 ```bash
 git clone https://github.com/y4mau/dotfiles.git ~/dotfiles
 bash ~/dotfiles/install.sh
 ```
+
+### Windows (PowerShell)
+
+Sets up symlinks in `%USERPROFILE%\.claude\` pointing to the dotfiles repo on WSL.
+Requires **Developer Mode** enabled or running as **Administrator**.
+
+```powershell
+\\wsl.localhost\Ubuntu-24.04\home\y4mau\ghq\github.com\y4mau\dotfiles\install-windows.ps1
+```
+
+> **Note:** WSL must be running for the symlinks to resolve.
 
 ### VS Code Devcontainers
 
