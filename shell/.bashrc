@@ -325,6 +325,13 @@ function get-eks-cluster-credentials {
     done
 }
 
+# Copy stdin to Windows clipboard (UTF-8 → UTF-16LE for clip.exe)
+if $IS_WSL; then
+    function copy() {
+        iconv -f UTF-8 -t UTF-16LE | clip.exe
+    }
+fi
+
 # Real-time clock in YYYY-MM-DD format
 function clock() {
     trap 'tput cnorm; printf "\n"; trap - INT' INT
