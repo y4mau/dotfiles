@@ -228,6 +228,10 @@ Fixes #234
 ### File Handling Updates
 - Must: insert final newline at the end of every file
 
+### Documentation
+- Use Mermaid diagrams as needed when creating documents to visualize flows, architectures, relationships, and other structures
+- Choose the appropriate Mermaid diagram type (flowchart, sequence, class, ER, state, etc.) based on the content
+
 ### GitHub Resource Workflow
 - If you see github resource, use gh commands
 
