@@ -235,6 +235,9 @@ Fixes #234
 - Use code blocks (not Mermaid) for directory structures
 - Use dark-mode-friendly colors in Mermaid diagrams (avoid pure black backgrounds, prefer soft/muted tones such as `#2d333b`, `#58a6ff`, `#3fb950`, `#d29922`, `#f85149`)
 
+### Kubernetes
+- Always specify `--context` and `--namespace` (or `-n`) when executing kubectl commands
+
 ### GitHub Resource Workflow
 - If you see github resource, use gh commands
 
