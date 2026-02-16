@@ -23,6 +23,34 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
 fi
 
 # =============================================================================
+# Dotfiles Auto-Update
+# =============================================================================
+_DOTFILES_DIR="$HOME/ghq/github.com/y4mau/dotfiles"
+_DOTFILES_UPDATED_MARKER="$HOME/.dotfiles_updated"
+
+# Show notice if dotfiles were updated in a previous session
+if [[ -f "$_DOTFILES_UPDATED_MARKER" ]]; then
+    echo "[dotfiles] Updated to latest origin/main: $(cat "$_DOTFILES_UPDATED_MARKER")"
+    rm -f "$_DOTFILES_UPDATED_MARKER"
+fi
+
+# Background check for dotfiles updates
+(
+    if [[ -d "$_DOTFILES_DIR/.git" ]]; then
+        git -C "$_DOTFILES_DIR" fetch origin main --quiet 2>/dev/null
+        local_head=$(git -C "$_DOTFILES_DIR" rev-parse HEAD 2>/dev/null)
+        remote_head=$(git -C "$_DOTFILES_DIR" rev-parse origin/main 2>/dev/null)
+        if [[ -n "$local_head" && -n "$remote_head" && "$local_head" != "$remote_head" ]]; then
+            git -C "$_DOTFILES_DIR" pull --ff-only origin main --quiet 2>/dev/null
+            if [[ $? -eq 0 ]]; then
+                git -C "$_DOTFILES_DIR" log --oneline "${local_head}..HEAD" 2>/dev/null > "$_DOTFILES_UPDATED_MARKER"
+            fi
+        fi
+    fi
+) &
+disown
+
+# =============================================================================
 # History Configuration
 # =============================================================================
 HISTCONTROL=ignoreboth:erasedups
