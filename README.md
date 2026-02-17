@@ -206,6 +206,10 @@ For faster shell startup, these tools are lazy-loaded (initialized on first use)
 - `direnv`
 - `gcloud`
 
+### Dotfiles Auto-Update
+
+On each shell startup, a background process checks `origin/main` for updates and pulls them automatically (`--ff-only`). If updates were applied, the next shell session displays a notice with the updated commits.
+
 ### Local Customizations
 
 Add machine-specific settings to `~/.bashrc.local` (not tracked in git):
