@@ -29,6 +29,8 @@ dotfiles/
 │   ├── agents/         # Custom subagents
 │   ├── commands/       # Custom slash commands
 │   └── hooks/          # Pre/post execution hooks
+├── tmux/               # tmux configuration
+│   └── .tmux.conf      # tmux settings
 ├── codex/              # OpenAI Codex CLI configuration
 │   └── config.toml     # Codex settings and MCP servers
 ├── config/             # Application-specific configs
