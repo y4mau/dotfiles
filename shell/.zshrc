@@ -185,6 +185,7 @@ alias gwj='source ~/bin/git-worktree-jump.sh'
 alias bers="bundle exec rspec"
 alias pex='pet exec'
 alias ped='pet edit'
+alias lg='lazygit'
 
 # Claude Code aliases
 alias cb="claude --permission-mode bypassPermissions"
