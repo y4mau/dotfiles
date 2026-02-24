@@ -186,6 +186,45 @@ foreach ($link in $allLinks) {
 
 Write-Host ""
 Write-Host "Windows Claude Code symlinks set up successfully!" -ForegroundColor Green
+
+# ---- Windows Terminal keybindings -------------------------------------------
+
+# Pass Ctrl+] through to the shell (used by ghq+peco selector in bash/zsh)
+$wtSettingsPaths = @(
+    "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+    "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
+)
+
+foreach ($wtSettings in $wtSettingsPaths) {
+    if (-not (Test-Path $wtSettings)) { continue }
+
+    Write-Info "Updating Windows Terminal keybindings: $wtSettings"
+    $settings = Get-Content $wtSettings -Raw | ConvertFrom-Json
+
+    # Ensure keybindings array exists
+    if (-not $settings.keybindings) {
+        $settings | Add-Member -NotePropertyName "keybindings" -NotePropertyValue @()
+    }
+
+    # Check if Ctrl+] binding already exists
+    $hasCtrlBracket = $settings.keybindings | Where-Object { $_.keys -eq "ctrl+]" }
+    if (-not $hasCtrlBracket) {
+        $binding = [PSCustomObject]@{
+            keys    = "ctrl+]"
+            command = [PSCustomObject]@{
+                action = "sendInput"
+                input  = "`u{001d}"
+            }
+        }
+        $settings.keybindings += $binding
+        $settings | ConvertTo-Json -Depth 10 | Set-Content $wtSettings -Encoding UTF8
+        Write-Info "Added Ctrl+] passthrough for ghq+peco selector"
+    }
+    else {
+        Write-Info "Ctrl+] keybinding already configured"
+    }
+}
+
 Write-Host ""
 Write-Host "Note: WSL must be running for symlinks to resolve." -ForegroundColor Yellow
 Write-Host "Backed up files (if any) have .bak extension in $claudeDir" -ForegroundColor Yellow
