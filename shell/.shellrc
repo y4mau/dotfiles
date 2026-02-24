@@ -69,8 +69,8 @@ if $IS_MACOS; then
     fi
 fi
 
-# npm global bin (if exists)
-if command -v npm &> /dev/null; then
+# npm global bin (skip Windows npm on WSL2)
+if command -v npm &> /dev/null && [[ "$(command -v npm)" != /mnt/* ]]; then
     export PATH="$(npm config get prefix)/bin:$PATH"
 fi
 
