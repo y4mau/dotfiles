@@ -55,6 +55,40 @@ install_prerequisites() {
 }
 
 # -----------------------------------------------------------------------------
+# Install GitHub CLI
+# -----------------------------------------------------------------------------
+install_gh() {
+  if has gh; then
+    info "GitHub CLI is already installed"
+    return 0
+  fi
+
+  info "Installing GitHub CLI..."
+  local keyring="/usr/share/keyrings/githubcli-archive-keyring.gpg"
+  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    | maybe_sudo dd of="$keyring" 2>/dev/null
+  maybe_sudo chmod go+r "$keyring"
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=$keyring] https://cli.github.com/packages stable main" \
+    | maybe_sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+  maybe_sudo apt-get update -qq
+  maybe_sudo apt-get install -y gh
+}
+
+# -----------------------------------------------------------------------------
+# Authenticate with GitHub
+# -----------------------------------------------------------------------------
+ensure_gh_auth() {
+  if gh auth status &>/dev/null; then
+    info "Already authenticated with GitHub"
+    return 0
+  fi
+
+  info "GitHub authentication required for private repo access"
+  gh auth login
+  gh auth setup-git
+}
+
+# -----------------------------------------------------------------------------
 # Clone or update repository
 # -----------------------------------------------------------------------------
 setup_repo() {
@@ -74,6 +108,8 @@ setup_repo() {
 info "Starting dotfiles bootstrap..."
 
 install_prerequisites
+install_gh
+ensure_gh_auth
 setup_repo
 
 info "Running install.sh..."
