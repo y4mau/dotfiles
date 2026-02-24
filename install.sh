@@ -269,3 +269,4 @@ if [ -d "$DOTFILES_DIR/bin" ]; then
 fi
 
 echo "Dotfiles installed successfully!"
+echo "Run 'exec \$SHELL -l' or open a new terminal to apply changes."

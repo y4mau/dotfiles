@@ -115,4 +115,5 @@ setup_repo
 info "Running install.sh..."
 bash "$DOTFILES_DIR/install.sh"
 
-info "Bootstrap complete!"
+info "Bootstrap complete! Restarting shell..."
+exec $SHELL -l
