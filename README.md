@@ -15,8 +15,9 @@ Shell configurations auto-detect the platform and adjust behavior accordingly.
 ```
 dotfiles/
 ├── shell/              # Shell configuration files
-│   ├── .zshrc          # Zsh configuration
-│   ├── .bashrc         # Bash configuration
+│   ├── .shellrc        # Shared shell configuration (sourced by both)
+│   ├── .bashrc         # Bash-specific configuration
+│   ├── .zshrc          # Zsh-specific configuration
 │   └── .zprofile       # Zsh profile
 ├── git/                # Git configuration
 │   └── .gitconfig      # Git settings
@@ -88,7 +89,7 @@ Dotfiles are automatically installed when creating a devcontainer if you add the
 
 After installation, customize these files:
 - `git/.gitconfig`: Update `[user]` section with your name and email
-- `shell/.zshrc` / `shell/.bashrc`:
+- `shell/.shellrc`: Shared config (aliases, PATH, env vars, tool integrations)
   - Uncomment and configure cloud SDK paths
   - Add any company-specific profiles
   - Set environment variables for credentials
@@ -161,7 +162,7 @@ After installation, customize these files:
 
 ### Cross-Platform Features
 
-The `.bashrc` uses platform detection (`IS_MACOS`, `IS_WSL`, `IS_LINUX`) to handle:
+The `.shellrc` uses platform detection (`IS_MACOS`, `IS_WSL`, `IS_LINUX`) to handle:
 
 | Feature | macOS | WSL2/Linux |
 |---------|-------|------------|
@@ -214,10 +215,10 @@ On each shell startup, a background process checks `origin/main` for updates and
 
 ### Local Customizations
 
-Add machine-specific settings to `~/.bashrc.local` (not tracked in git):
+Add machine-specific settings to `~/.bashrc.local` or `~/.zshrc.local` (not tracked in git):
 
 ```bash
-# Example ~/.bashrc.local
+# Example ~/.bashrc.local or ~/.zshrc.local
 export GOOGLE_CLOUD_PROJECT="my-project-id"
 export GOOGLE_APPLICATION_CREDENTIALS="$HOME/.config/gcloud/credentials.json"
 source ~/.company-profile
