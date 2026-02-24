@@ -34,6 +34,7 @@ dotfiles/
 ├── codex/              # OpenAI Codex CLI configuration
 │   └── config.toml     # Codex settings and MCP servers
 ├── config/             # Application-specific configs
+├── bootstrap.sh        # Bootstrap script for clean WSL2 setup
 ├── install.sh          # Setup script for Linux/macOS/WSL
 └── install-windows.ps1 # Setup script for Windows (Claude Code symlinks)
 ```
@@ -54,11 +55,28 @@ Before using these dotfiles:
 
 ## Installation
 
+### Quick Setup (Clean WSL2)
+
+On a fresh WSL2 Ubuntu where only `apt` is available:
+
+```bash
+sudo apt update && sudo apt install -y git && git clone https://github.com/y4mau/dotfiles.git ~/ghq/github.com/y4mau/dotfiles && bash ~/ghq/github.com/y4mau/dotfiles/bootstrap.sh
+```
+
+> **Note:** This repo is private. `git clone` will prompt for GitHub credentials (or use a pre-configured credential helper / `gh auth`).
+
+Alternatively, if `git` is already installed:
+
+```bash
+git clone https://github.com/y4mau/dotfiles.git ~/ghq/github.com/y4mau/dotfiles
+bash ~/ghq/github.com/y4mau/dotfiles/bootstrap.sh
+```
+
 ### Linux / macOS / WSL
 
 ```bash
-git clone https://github.com/y4mau/dotfiles.git ~/dotfiles
-bash ~/dotfiles/install.sh
+git clone https://github.com/y4mau/dotfiles.git ~/ghq/github.com/y4mau/dotfiles
+bash ~/ghq/github.com/y4mau/dotfiles/install.sh
 ```
 
 ### Windows (PowerShell)
