@@ -57,20 +57,17 @@ Before using these dotfiles:
 
 ### Quick Setup (Clean WSL2)
 
-On a fresh WSL2 Ubuntu where only `apt` is available:
+On a fresh WSL2 Ubuntu where only `apt` is available, run these commands **inside the WSL terminal** (not PowerShell):
 
 ```bash
-sudo apt update && sudo apt install -y git && git clone https://github.com/y4mau/dotfiles.git ~/ghq/github.com/y4mau/dotfiles && bash ~/ghq/github.com/y4mau/dotfiles/bootstrap.sh
+sudo apt update
+sudo apt install -y git
+git clone https://github.com/y4mau/dotfiles.git ~/ghq/github.com/y4mau/dotfiles
+bash ~/ghq/github.com/y4mau/dotfiles/bootstrap.sh
 ```
 
 > **Note:** This repo is private. `git clone` will prompt for GitHub credentials (or use a pre-configured credential helper / `gh auth`).
 
-Alternatively, if `git` is already installed:
-
-```bash
-git clone https://github.com/y4mau/dotfiles.git ~/ghq/github.com/y4mau/dotfiles
-bash ~/ghq/github.com/y4mau/dotfiles/bootstrap.sh
-```
 
 ### Linux / macOS / WSL
 
