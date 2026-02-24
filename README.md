@@ -62,12 +62,19 @@ On a fresh WSL2 Ubuntu where only `apt` is available, run these commands **insid
 
 ```bash
 sudo apt update
-sudo apt install -y git
+sudo apt install -y curl
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null
+sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+sudo apt update
+sudo apt install -y git gh
+gh auth login
+gh auth setup-git
 git clone https://github.com/y4mau/dotfiles.git ~/ghq/github.com/y4mau/dotfiles
 bash ~/ghq/github.com/y4mau/dotfiles/bootstrap.sh
 ```
 
-> **Note:** This repo is private. `git clone` will prompt for GitHub credentials (or use a pre-configured credential helper / `gh auth`).
+> **Note:** `gh auth login` opens an interactive flow — choose HTTPS and authenticate via browser. This configures git credentials for the private repo.
 
 
 ### Linux / macOS / WSL
