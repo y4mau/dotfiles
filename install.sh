@@ -231,6 +231,7 @@ fi
 info "Setting up symlinks..."
 
 # Shell configs
+ln -sf "$DOTFILES_DIR/shell/.shellrc" ~/.shellrc
 ln -sf "$DOTFILES_DIR/shell/.bashrc" ~/.bashrc
 ln -sf "$DOTFILES_DIR/shell/.zshrc" ~/.zshrc
 ln -sf "$DOTFILES_DIR/shell/.zprofile" ~/.zprofile
