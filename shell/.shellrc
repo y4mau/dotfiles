@@ -167,6 +167,7 @@ alias bers="bundle exec rspec"
 alias pex='pet exec'
 alias ped='pet edit'
 alias lg='lazygit'
+alias wrc='command wrc check --watch'
 
 # Claude Code aliases
 alias cb="claude --permission-mode bypassPermissions"
