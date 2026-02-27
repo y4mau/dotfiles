@@ -11,5 +11,8 @@
     "padding": 0
   },
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "enabledPlugins": {
+    "codex-runner@pp-cc-plugins": true
+  }
 }
