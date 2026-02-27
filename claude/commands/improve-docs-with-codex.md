@@ -1,6 +1,6 @@
 ---
 description: Improve created or updated documents by requesting Codex CLI review and repeating fixation until no concerns remain
-argument-hint: "<file-path(s)> [--max-iterations=5]"
+argument-hint: "<file-path(s)>"
 allowed-tools:
   - Bash(git rev-parse:*)
   - Bash(git diff:*)
@@ -32,9 +32,9 @@ You will iteratively improve documents by requesting reviews from Codex CLI and 
 - Read each target document in full using the Read tool.
 - Understand the document's purpose, structure, and audience.
 
-### Step 3) Review-fix loop (max iterations: 5, or user-specified `--max-iterations`)
+### Step 3) Review-fix loop (until `NO_CONCERNS`)
 
-For each iteration:
+Repeat until Codex returns `NO_CONCERNS`:
 
 #### 3a) Request Codex review
 Run:
@@ -50,22 +50,30 @@ Where `<PROMPT>` instructs Codex to:
   - **Grammar & style**: Are there grammatical errors, typos, or inconsistent style?
   - **Formatting**: Is Markdown/markup syntax correct and consistent?
   - **Links & references**: Are references valid and up to date?
+- Classify each issue into one of three categories:
+  - **Blocking**: Clearly wrong and must be fixed (errors, broken syntax, incorrect info)
+  - **Trade-off**: Multiple valid approaches exist; changing has both upsides and downsides
+  - **Non-blocking**: Minor improvements with no meaningful downside
 - Output a structured Markdown review with sections:
   - `## Verdict`: Either `NO_CONCERNS` or `HAS_CONCERNS`
   - `## Blocking issues` (must fix)
+  - `## Trade-offs` (competing valid approaches)
   - `## Non-blocking suggestions` (nice to have)
   - For each issue: file path, line range, description, and suggested fix
 
 #### 3b) Parse review result
 - If the Verdict is `NO_CONCERNS` → exit the loop and proceed to Step 4.
 - If the Verdict is `HAS_CONCERNS`:
-  - Display the review to the user with iteration number (e.g., "Iteration 1/5").
-  - Apply fixes for all **blocking issues** using the Edit tool.
-  - Apply fixes for **non-blocking suggestions** using the Edit tool.
-  - After applying all fixes, continue to the next iteration.
-
-#### 3c) Check iteration limit
-- If max iterations reached and concerns still remain, display the remaining issues to the user and stop.
+  - Display the review to the user with the current iteration number (e.g., "Iteration 3").
+  - **Blocking issues**: Apply fixes immediately using the Edit tool.
+  - **Non-blocking suggestions**: Apply fixes immediately using the Edit tool.
+  - **Trade-offs**: For each trade-off, present it to the user with the following structure before proceeding:
+    - **Issue**: What Codex flagged
+    - **Option A** (current): Pros / Cons
+    - **Option B** (suggested): Pros / Cons
+    - **Recommended**: Which option and why
+    - Wait for the user's decision before applying or skipping the change.
+  - After all items are resolved, continue to the next iteration.
 
 ### Step 4) Final summary
 After the loop completes, output:
