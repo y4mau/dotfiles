@@ -54,7 +54,6 @@ claude/telemetry/
 claude/todos/
 claude/plans/
 claude/plugins/
-claude/skills/
 claude/ide/
 
 # Codex CLI sensitive files
