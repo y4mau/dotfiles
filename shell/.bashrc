@@ -136,3 +136,22 @@ function peco-src () {
 if command -v peco &> /dev/null && command -v ghq &> /dev/null; then
     bind -x '"\C-]": peco-src'
 fi
+
+# markdown.mbt playground: open any markdown file in browser
+# Requires: cd ~/ghq/github.com/y4mau/markdown.mbt && pnpm vite
+function mdpreview () {
+    local abs
+    abs=$(realpath "$1" 2>/dev/null)
+    if [[ -z "$abs" || ! -f "$abs" ]]; then
+        echo "mdpreview: file not found: $1" >&2
+        return 1
+    fi
+    local url="http://localhost:5173/?file=${abs}"
+    if command -v xdg-open &>/dev/null; then
+        xdg-open "$url"
+    elif command -v cmd.exe &>/dev/null; then
+        cmd.exe /c start "" "$url" 2>/dev/null
+    else
+        echo "$url"
+    fi
+}
