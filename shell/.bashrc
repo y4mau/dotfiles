@@ -155,3 +155,6 @@ function mdpreview () {
         echo "$url"
     fi
 }
+
+# moonbit
+export PATH="$HOME/.moon/bin:$PATH"
