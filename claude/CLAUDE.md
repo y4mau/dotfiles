@@ -234,6 +234,11 @@ Fixes #234
 - Use `<br/>` instead of `\n` for line breaks in Mermaid node labels
 - Use code blocks (not Mermaid) for directory structures
 - Use dark-mode-friendly colors in Mermaid diagrams (avoid pure black backgrounds, prefer soft/muted tones such as `#2d333b`, `#58a6ff`, `#3fb950`, `#d29922`, `#f85149`)
+- **Mermaid Width Control:**
+  - Prefer `TD` (top-down) direction over `LR` to avoid horizontal overflow
+  - Keep node labels under 4 words; use `<br/>` to wrap longer text vertically
+  - Maximum 4 nodes at the same depth level; split into subgraphs if more
+  - Avoid long edge labels; keep them under 3 words or omit
 
 ### Kubernetes
 - Always specify `--context` and `--namespace` (or `-n`) when executing kubectl commands
