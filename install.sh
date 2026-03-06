@@ -236,6 +236,7 @@ ln -sf "$DOTFILES_DIR/shell/.bash_profile" ~/.bash_profile
 ln -sf "$DOTFILES_DIR/shell/.bashrc" ~/.bashrc
 ln -sf "$DOTFILES_DIR/shell/.zshrc" ~/.zshrc
 ln -sf "$DOTFILES_DIR/shell/.zprofile" ~/.zprofile
+ln -sf "$DOTFILES_DIR/shell/.dircolors" ~/.dircolors
 
 # Git config
 ln -sf "$DOTFILES_DIR/git/.gitconfig" ~/.gitconfig
