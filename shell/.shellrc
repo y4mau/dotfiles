@@ -158,6 +158,7 @@ alias gc='git commit'
 alias gm='git merge'
 alias grom='git fetch && git rebase origin/master'
 alias gsh='git_branch_history.sh'
+alias gcl='ghq clone'
 
 # Git worktree jump with peco
 alias gwj='source ~/bin/git-worktree-jump.sh'
