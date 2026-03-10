@@ -33,6 +33,18 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
+# Truncate working directory to last N components
+function __truncated_pwd() {
+    local max_depth=3
+    local dir="${PWD/#$HOME/\~}"
+    local count=$(echo "$dir" | tr -cd '/' | wc -c)
+    if [[ $count -gt $max_depth ]]; then
+        echo "$dir" | rev | cut -d'/' -f1-${max_depth} | rev
+    else
+        echo "$dir"
+    fi
+}
+
 # Git status for prompt
 function __git_ps1_branch() {
     local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
@@ -72,13 +84,13 @@ esac
 if [ "$color_prompt" = yes ]; then
     # One Half Dark: green=#98c379, blue=#61afef, yellow=#e5c07b
     if [[ "${COLORTERM:-}" =~ ^(truecolor|24bit)$ ]]; then
-        PS1='${debian_chroot:+($debian_chroot)}\[\033[38;2;152;195;121m\]\u\[\033[00m\]: \[\033[38;2;97;175;239m\]\w\[\033[38;2;229;192;123m\]$(__git_ps1_branch)\[\033[00m\] \$ '
+        PS1='${debian_chroot:+($debian_chroot)}\[\033[38;2;152;195;121m\]\u\[\033[00m\]: \[\033[38;2;97;175;239m\]$(__truncated_pwd)\[\033[38;2;229;192;123m\]$(__git_ps1_branch)\[\033[00m\] \$ '
     else
         # 256-color fallback: green=150, blue=75, yellow=180
-        PS1='${debian_chroot:+($debian_chroot)}\[\033[38;5;150m\]\u\[\033[00m\]: \[\033[38;5;75m\]\w\[\033[38;5;180m\]$(__git_ps1_branch)\[\033[00m\] \$ '
+        PS1='${debian_chroot:+($debian_chroot)}\[\033[38;5;150m\]\u\[\033[00m\]: \[\033[38;5;75m\]$(__truncated_pwd)\[\033[38;5;180m\]$(__git_ps1_branch)\[\033[00m\] \$ '
     fi
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u: \w$(__git_ps1_branch) \$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u: $(__truncated_pwd)$(__git_ps1_branch) \$ '
 fi
 unset color_prompt
 

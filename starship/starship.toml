@@ -7,23 +7,23 @@ $directory\
 $git_branch\
 $git_status\
 $cmd_duration\
-$line_break\
 $character"""
 
 [username]
 style_user = "#98c379"
 style_root = "#e06c75"
-format = "[$user]($style) "
+format = "[$user]($style): "
 show_always = true
 
 [directory]
 style = "#61afef"
-truncation_length = 5
+truncation_length = 3
 truncate_to_repo = false
+format = "[$path]($style) "
 
 [git_branch]
 style = "#e5c07b"
-format = "[$symbol$branch]($style) "
+format = "[(\\($branch\\))]($style) "
 
 [git_status]
 style = "#e06c75"
