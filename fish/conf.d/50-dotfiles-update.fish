@@ -9,15 +9,18 @@ if test -f $marker
     rm -f $marker
 end
 
-# Background check for dotfiles updates (fish auto-disowns background jobs)
-if test -d $dotfiles_dir/.git
-    fish -c "
-        git -C $dotfiles_dir fetch origin main --quiet 2>/dev/null
-        set -l local_head (git -C $dotfiles_dir rev-parse HEAD 2>/dev/null)
-        set -l remote_head (git -C $dotfiles_dir rev-parse origin/main 2>/dev/null)
-        if test -n \"\$local_head\"; and test -n \"\$remote_head\"; and test \"\$local_head\" != \"\$remote_head\"
-            git -C $dotfiles_dir pull --ff-only origin main --quiet 2>/dev/null
-            and git -C $dotfiles_dir log --oneline \"\$local_head..HEAD\" 2>/dev/null >$marker
-        end
-    " &
+# Background check for dotfiles updates using sh (avoids fish child process and job warning)
+if status is-interactive; and test -d $dotfiles_dir/.git
+    command sh -c '
+        git -C "$1" fetch origin main --quiet 2>/dev/null
+        local_head=$(git -C "$1" rev-parse HEAD 2>/dev/null)
+        remote_head=$(git -C "$1" rev-parse origin/main 2>/dev/null)
+        if [ -n "$local_head" ] && [ -n "$remote_head" ] && [ "$local_head" != "$remote_head" ]; then
+            git -C "$1" pull --ff-only origin main --quiet 2>/dev/null
+            if [ $? -eq 0 ]; then
+                git -C "$1" log --oneline "${local_head}..HEAD" 2>/dev/null > "$2"
+            fi
+        fi
+    ' _ $dotfiles_dir $marker &
+    disown
 end
