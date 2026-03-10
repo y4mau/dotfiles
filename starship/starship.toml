@@ -1,0 +1,46 @@
+# Starship prompt configuration
+# One Half Dark color theme
+
+format = """
+$username\
+$directory\
+$git_branch\
+$git_status\
+$cmd_duration\
+$line_break\
+$character"""
+
+[username]
+style_user = "#98c379"
+style_root = "#e06c75"
+format = "[$user]($style) "
+show_always = true
+
+[directory]
+style = "#61afef"
+truncation_length = 5
+truncate_to_repo = false
+
+[git_branch]
+style = "#e5c07b"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "#e06c75"
+format = '([$all_status$ahead_behind]($style) )'
+modified = "*"
+staged = "+"
+untracked = "?"
+stashed = "$"
+ahead = "↑${count}"
+behind = "↓${count}"
+
+[cmd_duration]
+style = "#5c6370"
+min_time = 2_000
+format = "[$duration]($style) "
+
+[character]
+success_symbol = "[\\$](white)"
+error_symbol = "[\\$](#e06c75)"
+vimcmd_symbol = "[❮](#98c379)"
