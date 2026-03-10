@@ -222,8 +222,9 @@ Fixes #234
 - Start description with lowercase letter, no period at end
 
 ### Git Push Workflow
-- Ask me if you run git push (exception: pr-review-implementer agent can push without asking)
-- pr-review-implementer is allowed to push automatically when addressing review comments
+- If the remote repository belongs to y4mau (including forks), push without asking
+- For all other repositories, always ask before running git push
+- pr-review-implementer agent can push without asking regardless of ownership
 
 ### File Handling Updates
 - Must: insert final newline at the end of every file
