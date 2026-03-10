@@ -17,17 +17,17 @@ show_always = true
 
 [directory]
 style = "#61afef"
-truncation_length = 3
+truncation_length = 0
 truncate_to_repo = false
 format = "[$path]($style) "
 
 [git_branch]
 style = "#e5c07b"
-format = "[(\\($branch\\))]($style) "
+format = "[\\($branch]($style)"
 
 [git_status]
 style = "#e06c75"
-format = '([$all_status$ahead_behind]($style) )'
+format = '[$all_status$ahead_behind]($style)[\)](#e5c07b) '
 modified = "*"
 staged = "+"
 untracked = "?"
