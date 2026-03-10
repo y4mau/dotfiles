@@ -4,8 +4,8 @@ function peco-src
     set -l selected_dir
 
     if command -q fzf
-        if test -n "$TMUX"
-            set selected_dir (ghq list -p | fzf --tmux 80%,60% --query (commandline -b))
+        if test -n "$TMUX"; and command -q fzf-tmux
+            set selected_dir (ghq list -p | fzf-tmux -p 80%,60% --query (commandline -b))
         else
             set selected_dir (ghq list -p | fzf --query (commandline -b))
         end
