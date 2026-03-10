@@ -144,7 +144,7 @@ alias l='ls -CF'
 
 # Shell
 alias exsh='exec $SHELL'
-alias es='exec $SHELL'
+alias es='exec fish'
 
 # Git aliases
 alias gb='git branch'
@@ -354,9 +354,9 @@ function update_terminal_title() {
         local directory=${PWD##*/}
         _cached_git_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
         if [[ -n "$_cached_git_branch" ]]; then
-            echo -ne "\033]0;${directory} (${_cached_git_branch})\007"
+            printf '\033]0;%s (%s)\007' "$directory" "$_cached_git_branch"
         else
-            echo -ne "\033]0;${directory}\007"
+            printf '\033]0;%s\007' "$directory"
         fi
     fi
 }
