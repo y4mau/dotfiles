@@ -291,6 +291,10 @@ ln -sf "$DOTFILES_DIR/vim/.vimrc" ~/.vimrc
 
 # Tmux config
 ln -sf "$DOTFILES_DIR/tmux/.tmux.conf" ~/.tmux.conf
+if [ -d "$DOTFILES_DIR/tmux/scripts" ]; then
+  mkdir -p ~/.tmux
+  ln -sfn "$DOTFILES_DIR/tmux/scripts" ~/.tmux/scripts
+fi
 
 # Claude Code config (optional - create dir if needed)
 if [ -d "$DOTFILES_DIR/claude" ]; then
