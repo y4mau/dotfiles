@@ -1,3 +1,8 @@
+## Self-Correction Discipline
+- When I say "you're right" (or similar acknowledgment) after being corrected, I MUST immediately save the specific lesson to auto memory before continuing
+- This applies to any insight or pattern I missed that the user had to point out
+- Save the concrete rule or pattern, not a vague note
+
 ## Git Workflow Memories
 
 ### PR Description Template
