@@ -8,10 +8,10 @@ end
 # Vi keybindings
 fish_vi_key_bindings
 
-# Bind Ctrl+] to peco-src (repository selector) in both default and insert modes
+# Bind Ctrl+] to peco-src (must be after fish_vi_key_bindings to avoid being reset)
 if command -q ghq; and begin; command -q fzf; or command -q peco; end
-    bind \c] peco-src
-    bind -M insert \c] peco-src
+    bind -M default \x1d peco-src
+    bind -M insert \x1d peco-src
 end
 
 # Starship prompt
