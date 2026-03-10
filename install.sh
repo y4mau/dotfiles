@@ -157,9 +157,11 @@ install_packages() {
     # macOS: use Homebrew
     if has brew; then
       local brew_packages=()
-      has peco   || brew_packages+=(peco)
-      has ghq    || brew_packages+=(ghq)
-      has direnv || brew_packages+=(direnv)
+      has peco     || brew_packages+=(peco)
+      has ghq      || brew_packages+=(ghq)
+      has direnv   || brew_packages+=(direnv)
+      has fish     || brew_packages+=(fish)
+      has starship || brew_packages+=(starship)
 
       if [[ ${#brew_packages[@]} -gt 0 ]]; then
         info "Installing via Homebrew: ${brew_packages[*]}"
@@ -190,6 +192,30 @@ install_packages() {
 
     # ghq from GitHub releases
     install_github_release "x-motemen/ghq" "ghq" "ghq_{os}_{arch}.zip" || true
+
+    # fish shell
+    if ! has fish; then
+      info "Installing fish via apt..."
+      maybe_sudo apt-add-repository -y ppa:fish-shell/release-3 2>/dev/null || true
+      maybe_sudo apt-get update -qq
+      maybe_sudo apt-get install -y fish || warn "Failed to install fish"
+    else
+      info "fish is already installed"
+    fi
+  fi
+
+  # -------------------------------------------------------------------------
+  # Cross-platform tools from GitHub releases
+  # -------------------------------------------------------------------------
+  # fnm (Fast Node Manager)
+  install_github_release "Schniz/fnm" "fnm" "fnm-{os}.zip" || true
+
+  # starship prompt
+  if ! has starship; then
+    info "Installing starship..."
+    curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$LOCAL_BIN" || warn "Failed to install starship"
+  else
+    info "starship is already installed"
   fi
 
   # -------------------------------------------------------------------------
@@ -237,6 +263,22 @@ ln -sf "$DOTFILES_DIR/shell/.bashrc" ~/.bashrc
 ln -sf "$DOTFILES_DIR/shell/.zshrc" ~/.zshrc
 ln -sf "$DOTFILES_DIR/shell/.zprofile" ~/.zprofile
 ln -sf "$DOTFILES_DIR/shell/.dircolors" ~/.dircolors
+
+# Fish config
+if [ -d "$DOTFILES_DIR/fish" ]; then
+  mkdir -p ~/.config
+  if [ -d ~/.config/fish ] && [ ! -L ~/.config/fish ]; then
+    info "Backing up existing fish config to ~/.config/fish.bak"
+    mv ~/.config/fish ~/.config/fish.bak
+  fi
+  ln -sfn "$DOTFILES_DIR/fish" ~/.config/fish
+fi
+
+# Starship config
+if [ -f "$DOTFILES_DIR/starship/starship.toml" ]; then
+  mkdir -p ~/.config
+  ln -sf "$DOTFILES_DIR/starship/starship.toml" ~/.config/starship.toml
+fi
 
 # Git config
 ln -sf "$DOTFILES_DIR/git/.gitconfig" ~/.gitconfig
