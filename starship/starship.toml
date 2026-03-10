@@ -41,6 +41,6 @@ min_time = 2_000
 format = "[$duration]($style) "
 
 [character]
-success_symbol = "[\\$](white)"
-error_symbol = "[\\$](#e06c75)"
+success_symbol = "[❯](white)"
+error_symbol = "[❯](#e06c75)"
 vimcmd_symbol = "[❮](#98c379)"
