@@ -64,6 +64,11 @@ codex/log/
 codex/version.json
 codex/internal_storage.json
 
+# Fish runtime files
+fish/fish_history
+fish/fish_variables
+fish/fishd.*
+
 # macOS
 .DS_Store
 .AppleDouble
