@@ -37,7 +37,8 @@ fi
 function __truncated_pwd() {
     local max_depth=3
     local dir="${PWD/#$HOME/\~}"
-    local count=$(echo "$dir" | tr -cd '/' | wc -c)
+    local count
+    count=$(echo "$dir" | tr -cd '/' | wc -c)
     if [[ $count -gt $max_depth ]]; then
         echo "$dir" | rev | cut -d'/' -f1-${max_depth} | rev
     else
@@ -47,7 +48,8 @@ function __truncated_pwd() {
 
 # Git status for prompt
 function __git_ps1_branch() {
-    local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    local branch
+    branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
     [[ -z "$branch" ]] && return
 
     local status=""
@@ -62,7 +64,8 @@ function __git_ps1_branch() {
     [[ -n $(git ls-files --others --exclude-standard 2>/dev/null | head -1) ]] && status+="?"
 
     # Ahead/behind upstream
-    local counts=$(git rev-list --left-right --count @{upstream}...HEAD 2>/dev/null)
+    local counts
+    counts=$(git rev-list --left-right --count "@{upstream}...HEAD" 2>/dev/null)
     if [[ -n "$counts" ]]; then
         local behind=${counts%%	*}
         local ahead=${counts##*	}
@@ -133,11 +136,12 @@ fi
 
 # ghq + peco repository selector (Ctrl+])
 function peco-src () {
-    local selected_dir=$(ghq list -p | peco --query "$READLINE_LINE")
+    local selected_dir
+    selected_dir=$(ghq list -p | peco --query "$READLINE_LINE")
     if [ -n "$selected_dir" ]; then
         READLINE_LINE=""
         history -s "cd ${selected_dir}"
-        cd "$selected_dir"
+        cd "$selected_dir" || return
         stty sane
         clear
         exec $SHELL

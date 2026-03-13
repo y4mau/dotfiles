@@ -1,0 +1,22 @@
+name: Validate dotfiles
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-add-repository -y ppa:fish-shell/release-3
+          sudo apt-get update -qq
+          sudo apt-get install -y fish shellcheck
+
+      - name: Run validation tests
+        run: bash tests/validate.sh --verbose
