@@ -31,7 +31,7 @@ format = '[$all_status$ahead_behind]($style)[\)](#e5c07b) '
 modified = "*"
 staged = "+"
 untracked = "?"
-stashed = "$"
+stashed = "\\$"
 ahead = "↑${count}"
 behind = "↓${count}"
 
