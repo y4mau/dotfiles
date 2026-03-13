@@ -24,12 +24,14 @@ dotfiles/
 ├── vim/                # Vim configuration
 │   └── .vimrc          # Vim settings
 ├── claude/             # Claude Code CLI configuration
-│   ├── CLAUDE.md       # Workflow guidelines and instructions
+│   ├── CLAUDE.md       # Global instructions (slim entry point)
 │   ├── settings.json   # Claude Code settings
 │   ├── statusline-command.sh  # Custom status line script
 │   ├── agents/         # Custom subagents
 │   ├── commands/       # Custom slash commands
-│   └── hooks/          # Pre/post execution hooks
+│   ├── hooks/          # Pre/post execution hooks
+│   ├── rules/          # Topic-specific instruction files
+│   └── skills/         # Skill-based slash commands
 ├── tmux/               # tmux configuration
 │   └── .tmux.conf      # tmux settings
 ├── codex/              # OpenAI Codex CLI configuration
@@ -169,13 +171,25 @@ After installation, customize these files:
 | `tdd-test-designer` | Design tests following TDD methodology |
 | `requirements-generator-v5` | Generate comprehensive requirement documents |
 
+### Custom Skills
+
+| Skill | Description |
+|-------|-------------|
+| `/commit` | Git commit following Conventional Commits v1.0.0 |
+| `/copy-pr-description` | Generate and copy PR description |
+| `/daily-report` | Generate daily work report |
+| `/jira-ticket` | Create Jira ticket |
+| `/mdpreview` | Preview markdown files |
+
 ### Custom Commands
 
 | Command | Description |
 |---------|-------------|
-| `/commit` | Git commit following Conventional Commits v1.0.0 |
 | `/rebuild_commit_tree` | Reorganize commits into meaningful units |
-| `/daily-report` | Generate daily work report |
+| `/codex-fix-pr` | Review and fix a PR with Codex CLI |
+| `/codex-review-base` | Review diff between base branch and HEAD using Codex CLI |
+| `/codex-svn-review` | Write SVN code to a codex workspace and invoke Codex CLI review |
+| `/improve-docs-with-codex` | Improve documents by requesting Codex CLI review |
 
 ### Hooks
 
