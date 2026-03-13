@@ -27,18 +27,18 @@ done
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 pass() {
-  ((PASS++))
+  ((++PASS))
   if $VERBOSE; then echo "  PASS  $1"; fi
 }
 
 fail() {
-  ((FAIL++))
+  ((++FAIL))
   ERRORS+=("$1")
   echo "  FAIL  $1"
 }
 
 skip() {
-  ((SKIP++))
+  ((++SKIP))
   echo "  SKIP  $1"
 }
 
