@@ -1,12 +1,12 @@
+---
+name: daily-report
+description: "Daily Report Generator"
+allowed-tools: Bash, Read, Grep, Glob
+---
+
 # Daily Report Generator
 
 Generate a concise daily report based on today's work activities.
-
-## Instructions
-
-1. Check today's git commits across all repositories and worktrees
-2. Review conversation history for completed tasks
-3. Generate a brief, focused daily report
 
 ## Steps
 

@@ -1,13 +1,12 @@
+---
+name: copy-pr-description
+description: "Copy PR Description"
+allowed-tools: Bash, Read, Grep, Glob
+---
+
 # Copy PR Description
 
 Generate a PR description in Japanese and copy it to clipboard.
-
-## Instructions
-
-1. Check for PR template at `.github/pull_request_template.md`
-2. Analyze commits between base branch and HEAD
-3. Generate a PR description in Japanese
-4. Copy to clipboard using PowerShell (for WSL)
 
 ## Steps
 
@@ -22,7 +21,7 @@ Generate a PR description in Japanese and copy it to clipboard.
 
 If `.github/pull_request_template.md` exists:
 - Read the template structure
-- Fill in the sections based on commits and changes
+- Fill in sections based on commits and changes
 - Keep section headers as-is (do NOT translate English headers to Japanese)
 
 If no template exists, use this default format:
@@ -52,11 +51,10 @@ Use PowerShell's Set-Clipboard for proper Japanese encoding on WSL:
 powershell.exe -Command "Set-Clipboard -Value '<description>'"
 ```
 
-Do NOT include Claude Code signature line.
-
 ## Notes
 
 - Always use Japanese for the description
+- Do NOT include Claude Code signature line
 - Keep it concise and focused
 - Escape backticks in PowerShell command with backslash
 - Respect the project's PR template structure when available

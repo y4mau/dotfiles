@@ -305,6 +305,7 @@ if [ -d "$DOTFILES_DIR/claude" ]; then
   [ -d "$DOTFILES_DIR/claude/agents" ] && ln -sfn "$DOTFILES_DIR/claude/agents" ~/.claude/agents
   [ -d "$DOTFILES_DIR/claude/commands" ] && ln -sfn "$DOTFILES_DIR/claude/commands" ~/.claude/commands
   [ -d "$DOTFILES_DIR/claude/hooks" ] && ln -sfn "$DOTFILES_DIR/claude/hooks" ~/.claude/hooks
+  [ -d "$DOTFILES_DIR/claude/rules" ] && ln -sfn "$DOTFILES_DIR/claude/rules" ~/.claude/rules
   [ -d "$DOTFILES_DIR/claude/skills" ] && ln -sfn "$DOTFILES_DIR/claude/skills" ~/.claude/skills
 fi
 

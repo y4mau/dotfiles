@@ -10,7 +10,6 @@ allowed-tools:
   - Bash(cd:*)
   - Bash(ls:*)
   - Bash(pwd:*)
-  - Bash(terminal-notifier:*)
   - Read
   - Edit
   - Glob
@@ -333,14 +332,6 @@ Codex CLI によるコードレビューを実施し、指摘事項を5回のイ
 - <deferred item in Japanese>
 EOF
 )"
-```
-
----
-
-### Step 9) Notify completion
-
-```bash
-terminal-notifier -title "Claude Code" -message "Task completed: Codex review+fix PR #$1 (5 iterations)" -activate com.googlecode.iterm2
 ```
 
 ---

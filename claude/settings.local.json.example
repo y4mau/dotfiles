@@ -4,7 +4,6 @@
       "Bash(find:*)",
       "Bash(git worktree:*)",
       "Bash(ls:*)",
-      "Bash(terminal-notifier:*)",
       "WebFetch(domain:docs.anthropic.com)",
       "WebFetch(domain:modelcontextprotocol.io)"
     ],

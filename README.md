@@ -144,7 +144,6 @@ After installation, customize these files:
 
 ### Other Tools
 
-- terminal-notifier (macOS, for task completion notifications)
 - jq (for JSON processing in scripts)
 - wslu (WSL2, for `wslview` browser support)
 
