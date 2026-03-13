@@ -14,11 +14,6 @@
 - Always display current directory and branch name on your response
 - Format: `[<directory(after ~)>, <branch>]`
 
-## Notifications
-
-- Send system notification when finishing a task: `terminal-notifier -title "Claude Code" -message "Task completed: [task description]" -activate com.googlecode.iterm2`
-- Also notify when asked to proceed with implementation
-
 ## Implementation Workflow
 
 - If you encounter unexpected result during implementations, ask whether to go on or replan

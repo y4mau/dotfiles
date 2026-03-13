@@ -9,7 +9,6 @@ allowed-tools:
   - Bash(dir:*)
   - Bash(cat:*)
   - Bash(mkdir:*)
-  - Bash(terminal-notifier:*)
   - Read
   - Write
   - Glob
@@ -181,15 +180,6 @@ Then ask:
 
 If yes, go back to Step 2.
 If no, proceed to notification.
-
----
-
-### Step 11) Notify completion
-
-Attempt to send a notification (skip if command not available):
-```
-terminal-notifier -title "Claude Code" -message "Task completed: Codex SVN review" -activate com.googlecode.iterm2
-```
 
 ---
 
