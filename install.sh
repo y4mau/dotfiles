@@ -86,7 +86,7 @@ install_github_release() {
 
   local tmpdir
   tmpdir="$(mktemp -d)"
-  trap "rm -rf '$tmpdir'" RETURN
+  trap 'rm -rf "$tmpdir"' RETURN
 
   # Get latest release tag
   local tag

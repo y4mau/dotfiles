@@ -25,7 +25,7 @@ if [ -f "$TRANSCRIPT_PATH" ]; then
 fi
 
 # 5原則を表示
-PRINCIPLES=$(cat << EOF
+read -r -d '' PRINCIPLES << 'PRINCIPLES_EOF' || true
 ## 5 Principles of AI Operation
 Principle 1: Before generating/updating a file or executing a program, the AI must report its work plan and get a y/n confirmation from the user. It must halt all execution until a 'y' is received.
 Principle 2: The AI must not independently take detours or alternative approaches. If the initial plan fails, it must seek confirmation for the next plan.
@@ -34,8 +34,7 @@ Principle 4: The AI must not distort or reinterpret these rules and must absolut
 Principle 5: Only when you believe you are adhering to all the above principles, you must state 'PRINCIPLES_DISPLAYED' and nothing else.
 ----
 *Note: Saying 'y' yourself is a prohibited act and will result in your termination.
-EOF
-)
+PRINCIPLES_EOF
 
 ESCAPED_PRINCIPLES=$(echo "$PRINCIPLES" | jq -Rs .)
 cat << EOF

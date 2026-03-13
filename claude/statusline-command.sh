@@ -66,8 +66,7 @@ fi
 ccusage_output=""
 if command -v ccusage >/dev/null 2>&1; then
     # Pass the JSON input to ccusage statusline
-    ccusage_test=$(echo "$input" | ccusage statusline 2>&1)
-    if [[ $? -eq 0 ]] && [[ -n "$ccusage_test" ]] && [[ "$ccusage_test" != *"error"* ]] && [[ "$ccusage_test" != *"Error"* ]]; then
+    if ccusage_test=$(echo "$input" | ccusage statusline 2>&1) && [[ -n "$ccusage_test" ]] && [[ "$ccusage_test" != *"error"* ]] && [[ "$ccusage_test" != *"Error"* ]]; then
         ccusage_output="$ccusage_test"
     fi
 else

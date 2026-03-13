@@ -7,8 +7,8 @@ selected=$(git worktree list 2>/dev/null | sed "s|^$cwd |./ |" | peco --query "$
 
 if [[ -n "$selected" ]]; then
   if [[ "$selected" == "./" ]]; then
-    cd "$cwd"
+    cd "$cwd" || return
   else
-    cd "$selected"
+    cd "$selected" || return
   fi
 fi
