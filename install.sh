@@ -317,5 +317,20 @@ if [ -d "$DOTFILES_DIR/bin" ]; then
   done
 fi
 
+# Set fish as default shell
+fish_path="$(command -v fish 2>/dev/null)"
+if [ -n "$fish_path" ]; then
+  if ! grep -qF "$fish_path" /etc/shells; then
+    info "Adding $fish_path to /etc/shells (requires sudo)..."
+    echo "$fish_path" | maybe_sudo tee -a /etc/shells >/dev/null
+  fi
+  if [ "$SHELL" != "$fish_path" ]; then
+    info "Setting fish as default shell..."
+    chsh -s "$fish_path"
+  fi
+else
+  warn "fish not found, skipping default shell change"
+fi
+
 echo "Dotfiles installed successfully!"
-echo "Run 'exec \$SHELL -l' or open a new terminal to apply changes."
+echo "Run 'exec fish -l' or open a new terminal to apply changes."
