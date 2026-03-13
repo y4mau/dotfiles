@@ -11,7 +11,8 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "codex-runner@pp-cc-plugins": true
+    "codex-runner@pp-cc-plugins": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "alwaysThinkingEnabled": true,
   "skipDangerousModePermissionPrompt": true,
